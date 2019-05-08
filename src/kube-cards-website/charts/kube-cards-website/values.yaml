@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: kube-cards-website
-  tag: latest
+  repository: kubecardsregistry.azurecr.io/kube-cards-website
+  tag: "2652253"
   pullPolicy: IfNotPresent
 
 nameOverride: ""

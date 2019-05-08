@@ -1,4 +1,7 @@
 dependencies:
+  - name: nginx-ingress
+    version: 1.6.0
+    repository: "@stable"
   - name: kube-cards-website
     version: 0.1.0
     repository: file://../../src/kube-cards-website/charts/kube-cards-website
