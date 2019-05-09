@@ -1,3 +1,8 @@
+#!/bin/bash
+
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+cd "$parent_path"
 
 # Install the cert-manager CRDs. We must do this before installing the Helm
 # chart in the next step for `release-0.8` of cert-manager:

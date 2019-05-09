@@ -1,4 +1,3 @@
-{{- if .Values.ingress.enabled -}}
 {{- $fullName := include "kube-cards-ingress.fullname" . -}}
 {{- $websiteFullName := include "kube-cards-ingress.websitefullname" . -}}
 apiVersion: extensions/v1beta1
@@ -12,6 +11,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}
   annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: {{ .Values.ingress.issuer }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
@@ -37,4 +38,3 @@ spec:
               servicePort: http
         {{- end }}
   {{- end }}
-{{- end }}
