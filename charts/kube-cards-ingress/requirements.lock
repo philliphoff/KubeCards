@@ -1,6 +1,9 @@
 dependencies:
+- name: nginx-ingress
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 1.6.0
 - name: kube-cards-website
   repository: file://../../src/kube-cards-website/charts/kube-cards-website
   version: 0.1.0
-digest: sha256:0a057c6560c73a1e356259d4cf42232ff63633555a996338c4b85455346e727c
-generated: 2019-05-08T22:02:02.530396-07:00
+digest: sha256:ee247337a4ddba59edc0b1cf2baf64a8bd130ba2e4bafef45c6a5724fc543a74
+generated: 2019-05-09T14:40:03.078549-07:00

@@ -1,0 +1,6 @@
+namespace: cert-manager
+
+issuer:
+  email: phoff@microsoft.com
+  name: letsencrypt-staging
+  server: https://acme-staging-v02.api.letsencrypt.org/directory
