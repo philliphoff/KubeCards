@@ -10,12 +10,16 @@ ingress:
   annotations:
     # nginx.ingress.kubernetes.io/rewrite-target: /$2
     kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host:
       paths: [ / ]
 
-  tls: []
+  tls:
+    - hosts:
+      - kubecards.westus.cloudapp.azure.com
+      secretName: tls-secret
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
