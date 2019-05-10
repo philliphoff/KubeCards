@@ -7,6 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { openAppDrawer } from './actions/AppDrawerActions';
+import { Dispatch } from 'redux';
 
 const styles = createStyles({
     root: {
@@ -20,16 +23,18 @@ const styles = createStyles({
     }
 });
 
-export interface Props extends WithStyles<typeof styles> {};
+export interface Props extends WithStyles<typeof styles> {
+    onOpen: () => void
+};
 
 function KubeCardsAppBar(props: Props) {
-    const { classes } = props;
+    const { classes, onOpen } = props;
 
     return (
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit">
+                    <IconButton className={classes.menuButton} color="inherit" onClick={() => onOpen()}>
                         <MenuIcon />
                     </IconButton>
                     <Typography className={classes.grow} color="inherit" variant="h6">
@@ -43,7 +48,16 @@ function KubeCardsAppBar(props: Props) {
 };
 
 KubeCardsAppBar.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    onOpen: PropTypes.func
 } as any;
 
-export default withStyles(styles)(KubeCardsAppBar);
+function mapDispatchToProps(dispatch: Dispatch) {
+    return {
+        onOpen: () => {
+            dispatch(openAppDrawer(true));
+        }
+    };
+}
+
+export default connect(null, mapDispatchToProps)(withStyles(styles)(KubeCardsAppBar));
