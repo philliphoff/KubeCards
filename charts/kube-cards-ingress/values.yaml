@@ -18,8 +18,8 @@ ingress:
 
   tls:
     - hosts:
-      - kubecards.westus.cloudapp.azure.com
-      secretName: tls-secret
+      - www.kubecards.net
+      secretName: tls-staging-secret
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

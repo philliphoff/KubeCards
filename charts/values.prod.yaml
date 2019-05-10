@@ -1,0 +1,7 @@
+kube-cards-ingress:
+  ingress:
+    issuer: letsencrypt-prod
+    tls:
+      - hosts:
+        - www.kubecards.net
+        secretName: tls-prod-secret
