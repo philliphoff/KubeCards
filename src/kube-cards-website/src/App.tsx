@@ -1,10 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import KubeCardsAppBar from './KubeCardsAppBar';
 
 const App: React.FC = () => {
   return (
     <div className="App">
+      <KubeCardsAppBar />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
