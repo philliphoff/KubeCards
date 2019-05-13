@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -17,6 +18,9 @@ const styles = createStyles({
     grow: {
         flexGrow: 1
     },
+    hide: {
+        display: 'none'
+    },
     menuButton: {
         marginRight: 20
     }
@@ -33,7 +37,7 @@ function KubeCardsToolbar(props: Props) {
     return (
         <div className={classes.root}>
             <Toolbar disableGutters={!open}>
-                <IconButton className={classes.menuButton} color="inherit" onClick={() => onOpen()}>
+                <IconButton className={classNames(classes.menuButton, open && classes.hide)} color="inherit" onClick={() => onOpen()}>
                     <MenuIcon />
                 </IconButton>
                 <Typography className={classes.grow} color="inherit" variant="h6">
@@ -64,4 +68,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
     };
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(KubeCardsToolbar));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(KubeCardsToolbar));
