@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
@@ -24,33 +23,38 @@ const styles = createStyles({
 });
 
 export interface Props extends WithStyles<typeof styles> {
-    onOpen: () => void
+    onOpen: () => void;
+    open: boolean;
 };
 
-function KubeCardsAppBar(props: Props) {
-    const { classes, onOpen } = props;
+function KubeCardsToolbar(props: Props) {
+    const { classes, onOpen, open } = props;
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" onClick={() => onOpen()}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography className={classes.grow} color="inherit" variant="h6">
-                        Kube Cards
-                    </Typography>
-                    <Button color="inherit">Login</Button>
-                </Toolbar>
-            </AppBar>
+            <Toolbar disableGutters={!open}>
+                <IconButton className={classes.menuButton} color="inherit" onClick={() => onOpen()}>
+                    <MenuIcon />
+                </IconButton>
+                <Typography className={classes.grow} color="inherit" variant="h6">
+                    Kube Cards
+                </Typography>
+                <Button color="inherit">Login</Button>
+            </Toolbar>
         </div>
     );
 };
 
-KubeCardsAppBar.propTypes = {
+KubeCardsToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     onOpen: PropTypes.func
 } as any;
+
+function mapStateToProps(state: any) {
+    return {
+        open: state.appDrawer
+    };
+}
 
 function mapDispatchToProps(dispatch: Dispatch) {
     return {
@@ -60,4 +64,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
     };
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(KubeCardsAppBar));
+export default connect(null, mapDispatchToProps)(withStyles(styles)(KubeCardsToolbar));
