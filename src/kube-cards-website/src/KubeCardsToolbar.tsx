@@ -8,8 +8,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { openAppDrawer } from './actions/AppDrawerActions';
-import { Dispatch } from 'redux';
-import { userAuthLogin } from './actions/UserAuthActions';
+import { ThunkDispatch } from 'redux-thunk';
+import { userAuthMsalLogin } from './actions/UserAuthActions';
+import { IKubeCardsStore } from './KubeCardsStore';
+import { Action } from 'redux';
 
 const styles = createStyles({
     grow: {
@@ -76,10 +78,10 @@ function mapStateToProps(state: any) {
     };
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
+function mapDispatchToProps(dispatch: ThunkDispatch<IKubeCardsStore, void, Action>) {
     return {
         onLogin: () => {
-            dispatch(userAuthLogin(true));
+            dispatch(userAuthMsalLogin());
         },
         onOpen: () => {
             dispatch(openAppDrawer(true));
