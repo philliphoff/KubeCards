@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
@@ -10,11 +9,9 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { openAppDrawer } from './actions/AppDrawerActions';
 import { Dispatch } from 'redux';
+import { userAuthLogin } from './actions/UserAuthActions';
 
 const styles = createStyles({
-    root: {
-        flexGrow: 1
-    },
     grow: {
         flexGrow: 1
     },
@@ -27,41 +24,63 @@ const styles = createStyles({
 });
 
 export interface Props extends WithStyles<typeof styles> {
+    loggedIn: boolean;
+    onLogin: () => void;
     onOpen: () => void;
     open: boolean;
 };
 
-function KubeCardsToolbar(props: Props) {
-    const { classes, onOpen, open } = props;
+class KubeCardsToolbar extends React.PureComponent<Props> {
+    constructor(props: Props) {
+        super(props);
 
-    return (
-        <div className={classes.root}>
-            <Toolbar disableGutters={!open}>
-                <IconButton className={classNames(classes.menuButton, open && classes.hide)} color="inherit" onClick={() => onOpen()}>
-                    <MenuIcon />
-                </IconButton>
-                <Typography className={classes.grow} color="inherit" variant="h6">
-                    Kube Cards
-                </Typography>
-                <Button color="inherit">Login</Button>
-            </Toolbar>
-        </div>
-    );
-};
+        this.onMenuButtonClick = this.onMenuButtonClick.bind(this);
+        this.onLoginButtonClick = this.onLoginButtonClick.bind(this);
+    }
 
-KubeCardsToolbar.propTypes = {
-    classes: PropTypes.object.isRequired,
-    onOpen: PropTypes.func
-} as any;
+    render() {
+        const { classes, loggedIn, onOpen, open } = this.props;
+
+        return (
+            <div className={classes.grow}>
+                <Toolbar disableGutters={!open}>
+                    <IconButton className={classNames(classes.menuButton, open && classes.hide)} color="inherit" onClick={this.onMenuButtonClick}>
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography className={classes.grow} color="inherit" variant="h6">
+                        Kube Cards
+                    </Typography>
+                    <Button className={classNames(loggedIn && classes.hide)} color="inherit" onClick={this.onLoginButtonClick}>Login</Button>
+                </Toolbar>
+            </div>
+        );
+    }
+
+    private onMenuButtonClick() {
+        const { onOpen } = this.props;
+
+        onOpen();
+    }
+
+    private onLoginButtonClick() {
+        const { onLogin } = this.props;
+
+        onLogin();
+    }
+}
 
 function mapStateToProps(state: any) {
     return {
+        loggedIn: state.userAuth,
         open: state.appDrawer
     };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
     return {
+        onLogin: () => {
+            dispatch(userAuthLogin(true));
+        },
         onOpen: () => {
             dispatch(openAppDrawer(true));
         }
