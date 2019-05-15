@@ -16,11 +16,16 @@ steps:
     command: login
     containerRegistry: container-tools-kubecardsregistry
 - task: Docker@2
-  displayName: Build and Push
+  displayName: Build
   inputs:
-    command: buildAndPush
-    containerRegistry: container-tools-kubecardsregistry
-    repository: kube-cards-website
+    command: build
     dockerFile: src/kube-cards-website/Dockerfile
     buildContext: src/kube-cards-website
+    repository: kube-cards-website
     arguments: --build-arg REACT_APP_MSAL_AUTHORITY=$(ReactAppMsalAuthority) --build-arg REACT_APP_MSAL_CLIENT_ID=$(ReactAppMsalClientId)
+- task: Docker@2
+  displayName: Push
+  inputs:
+    command: push
+    containerRegistry: container-tools-kubecardsregistry
+    repository: kube-cards-website
