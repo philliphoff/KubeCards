@@ -23,3 +23,4 @@ steps:
     repository: kube-cards-website
     dockerFile: src/kube-cards-website/Dockerfile
     buildContext: src/kube-cards-website
+    arguments: --build-arg REACT_APP_MSAL_AUTHORITY=$(ReactAppMsalAuthority) --build-arg REACT_APP_MSAL_CLIENT_ID=$(ReactAppMsalClientId)
