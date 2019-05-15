@@ -1,0 +1,11 @@
+ingress:
+  issuer: letsencrypt-prod
+
+  hosts:
+  - host: prod.kubecards.net
+    paths: [ / ]
+
+  tls:
+    - hosts:
+      - prod.kubecards.net
+      secretName: tls-prod-secret

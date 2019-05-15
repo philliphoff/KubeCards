@@ -13,12 +13,12 @@ ingress:
   issuer: letsencrypt-staging
 
   hosts:
-    - host:
+    - host: staging.kubecards.net
       paths: [ / ]
 
   tls:
     - hosts:
-      - www.kubecards.net
+      - staging.kubecards.net
       secretName: tls-staging-secret
 
 resources: {}
