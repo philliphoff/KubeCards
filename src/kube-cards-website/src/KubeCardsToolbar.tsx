@@ -26,54 +26,35 @@ const styles = createStyles({
 });
 
 export interface Props extends WithStyles<typeof styles> {
-    loggedIn: boolean;
+    allowLogin: boolean;
     onLogin: () => void;
     onOpen: () => void;
     open: boolean;
 };
 
 class KubeCardsToolbar extends React.PureComponent<Props> {
-    constructor(props: Props) {
-        super(props);
-
-        this.onMenuButtonClick = this.onMenuButtonClick.bind(this);
-        this.onLoginButtonClick = this.onLoginButtonClick.bind(this);
-    }
-
     render() {
-        const { classes, loggedIn, onOpen, open } = this.props;
+        const { allowLogin, classes, onLogin, onOpen, open } = this.props;
 
         return (
             <div className={classes.grow}>
                 <Toolbar disableGutters={!open}>
-                    <IconButton className={classNames(classes.menuButton, open && classes.hide)} color="inherit" onClick={this.onMenuButtonClick}>
+                    <IconButton className={classNames(classes.menuButton, open && classes.hide)} color="inherit" onClick={onOpen}>
                         <MenuIcon />
                     </IconButton>
                     <Typography className={classes.grow} color="inherit" variant="h6">
                         Kube Cards
                     </Typography>
-                    <Button className={classNames(loggedIn && classes.hide)} color="inherit" onClick={this.onLoginButtonClick}>Login</Button>
+                    <Button className={classNames(!allowLogin && classes.hide)} color="inherit" onClick={onLogin}>Login</Button>
                 </Toolbar>
             </div>
         );
-    }
-
-    private onMenuButtonClick() {
-        const { onOpen } = this.props;
-
-        onOpen();
-    }
-
-    private onLoginButtonClick() {
-        const { onLogin } = this.props;
-
-        onLogin();
     }
 }
 
 function mapStateToProps(state: any) {
     return {
-        loggedIn: state.userAuth,
+        allowLogin: state.userAuth.state === 'loggedOut',
         open: state.appDrawer
     };
 }
