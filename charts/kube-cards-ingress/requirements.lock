@@ -1,0 +1,6 @@
+dependencies:
+- name: kube-cards-website
+  repository: file://../../src/kube-cards-website/charts/kube-cards-website
+  version: 0.1.0
+digest: sha256:0a057c6560c73a1e356259d4cf42232ff63633555a996338c4b85455346e727c
+generated: 2019-05-10T11:03:57.551762-07:00
