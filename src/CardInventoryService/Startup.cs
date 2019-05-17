@@ -31,7 +31,13 @@ namespace CardInventoryService
             services.AddSingleton<ICardInventoryProvider>(new CardInventoryProvider(Configuration));
 
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
-                .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
+                .AddAzureADB2CBearer(options =>
+                {
+                    options.Instance = this.Configuration["AAD_B2C_Instance"];
+                    options.ClientId = this.Configuration["AAD_B2C_ClientId"];
+                    options.Domain = this.Configuration["AAD_B2C_Domain"];
+                    options.SignUpSignInPolicyId = this.Configuration["AAD_B2C_SignUpSignInPolicyId"];
+                });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
