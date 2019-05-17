@@ -25,6 +25,7 @@ namespace CardInventoryService.Data
                 {
                     UserId = userId
                 };
+                return cardInventory;
             }
 
             string sqlConnectionString = this.configuration["CardsDBConnectionString"];
