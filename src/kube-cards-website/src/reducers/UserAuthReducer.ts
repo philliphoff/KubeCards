@@ -14,6 +14,8 @@ const userAuthReducer = (state: IUserAuthStore = { state: 'loggedOut'}, action: 
             return ({ state: 'loggedIn', emails: action.emails, givenName: action.givenName, userId: action.userId });
         case 'KUBE_CARDS_USER_AUTH_LOGIN_ERROR':
             return ({ state: 'loggedOut', lastError: action.error });
+        case 'KUBE_CARDS_USER_AUTH_LOGOUT':
+            return ({ state: 'loggedOut' });
     }
 
     return state;

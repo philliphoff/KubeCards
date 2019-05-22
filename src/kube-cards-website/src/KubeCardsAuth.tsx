@@ -4,12 +4,17 @@ import { WithStyles, withStyles, Theme, StyleRulesCallback } from '@material-ui/
 import green from '@material-ui/core/colors/green';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import { userAuthMsalLogin } from './actions/UserAuthActions';
+import { userAuthMsalLogin, userAuthMsalLogout } from './actions/UserAuthActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { bindPopper, bindToggle, usePopupState } from 'material-ui-popup-state/hooks';
-import { Popper, Typography, Paper, Fade, IconButton } from '@material-ui/core';
+import { Popper, Typography, Paper, Fade, IconButton, DialogActions, DialogContent, Grid } from '@material-ui/core';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
+    bigAvatar: {
+        height: 80,
+        marginRight: 8,
+        width: 80
+    },
     wrapper: {
         margin: theme.spacing.unit,
         position: 'relative'
@@ -25,7 +30,10 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 });
 
 interface Props extends WithStyles<typeof styles> {
+    email: string;
+    givenName: string;
     onLogin: () => void;
+    onLogout: () => void;
     state: 'loggedOut' | 'loggingIn' | 'loggedIn';
     userInitials: string | undefined;
 };
@@ -35,17 +43,28 @@ const KubeCardsAuth: React.FunctionComponent<Props> = props => {
     const popupState = usePopupState({ variant: 'popper', popupId: 'user-auth-popper'});
 
     if (state === 'loggedIn') {
-        const { userInitials } = props;
+        const { classes, email, givenName, onLogout, userInitials } = props;
         return (
             <div>
                 <IconButton variant='contained' {...bindToggle(popupState)}>
                     <Avatar>{userInitials}</Avatar>
                 </IconButton>
-                <Popper {...bindPopper(popupState)} transition>
+                <Popper {...bindPopper(popupState)} placement='bottom' transition modifiers={{ arrow: { enabled: true }}}>
                     {({ TransitionProps }: {TransitionProps: any}) => (
                         <Fade {...TransitionProps} timout={350}>
                             <Paper>
-                                <Typography>The content of the Popper.</Typography>
+                                <DialogContent>
+                                    <Grid alignItems='center' container direction='row'>
+                                        <Avatar className={classes.bigAvatar}>{userInitials}</Avatar>
+                                        <Grid direction='column'>
+                                            <Typography variant='h6'>{givenName}</Typography>
+                                            <Typography variant='body1'>{email}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={onLogout}>Sign Out</Button>
+                                </DialogActions>
                             </Paper>
                         </Fade>
                     )}
@@ -75,6 +94,8 @@ function generateInitials(name: string | undefined): string | undefined {
 
 function mapStateToProps(state: any) {
     return {
+        email: state.userAuth.emails && state.userAuth.emails[0],
+        givenName: state.userAuth.givenName,
         state: state.userAuth.state,
         userInitials: generateInitials(state.userAuth.givenName)
     };
@@ -84,6 +105,9 @@ function mapDispatchToProps(dispatch: any) {
     return {
         onLogin: () => {
             dispatch(userAuthMsalLogin());
+        },
+        onLogout: () => {
+            dispatch(userAuthMsalLogout());
         }
     }
 }

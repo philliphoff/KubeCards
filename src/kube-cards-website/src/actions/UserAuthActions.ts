@@ -18,6 +18,10 @@ export const userAuthLoginError = (error: string) => ({
     error
 });
 
+export const userAuthLogout = () => ({
+    type: 'KUBE_CARDS_USER_AUTH_LOGOUT'
+});
+
 export const userAuthMsalLogin = () => {
     return async (dispatch: Dispatch) => {
         try {
@@ -30,5 +34,11 @@ export const userAuthMsalLogin = () => {
         catch (err) {
             dispatch(userAuthLoginError(err.toString()));
         }
+    };
+};
+
+export const userAuthMsalLogout = () => {
+    return async (dispatch: Dispatch) => {
+        dispatch(userAuthLogout());
     };
 };
