@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { createStyles, WithStyles, withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles';
+import { WithStyles, withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import { userAuthMsalLogin } from './actions/UserAuthActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { bindPopper, bindToggle, usePopupState } from 'material-ui-popup-state/hooks';
+import { Popper, Typography, Paper, Fade, IconButton } from '@material-ui/core';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
     wrapper: {
@@ -30,11 +32,26 @@ interface Props extends WithStyles<typeof styles> {
 
 const KubeCardsAuth: React.FunctionComponent<Props> = props => {
     const { state } = props;
+    const popupState = usePopupState({ variant: 'popper', popupId: 'user-auth-popper'});
 
     if (state === 'loggedIn') {
         const { userInitials } = props;
-
-        return <Avatar>{userInitials}</Avatar>;
+        return (
+            <div>
+                <IconButton variant='contained' {...bindToggle(popupState)}>
+                    <Avatar>{userInitials}</Avatar>
+                </IconButton>
+                <Popper {...bindPopper(popupState)} transition>
+                    {({ TransitionProps }: {TransitionProps: any}) => (
+                        <Fade {...TransitionProps} timout={350}>
+                            <Paper>
+                                <Typography>The content of the Popper.</Typography>
+                            </Paper>
+                        </Fade>
+                    )}
+                </Popper>
+            </div>
+        );
     }
     else {
         const { classes, onLogin } = props;
