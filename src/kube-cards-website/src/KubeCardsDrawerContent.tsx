@@ -23,10 +23,6 @@ const KubeCardsDrawerContent: React.FunctionComponent = () => {
                     <ListItemIcon><SettingsIcon /></ListItemIcon>
                     <ListItemText primary='Settings' />
                 </ListItem>
-                <ListItem button key='Sign Out'>
-                    <ListItemIcon><AllOutIcon /></ListItemIcon>
-                    <ListItemText primary='Sign Out' />
-                </ListItem>
             </List>
         </div>
     );

@@ -1,40 +1,60 @@
 import { Dispatch } from "redux";
-import * as Msal from 'msal';
 
-export const userAuthLogin = (state: 'loggedOut' | 'loggingIn' | 'loggedIn', error?: string) => ({
-    type: 'KUBE_CARDS_USER_AUTH_LOGIN',
-    state,
+import userAuthService from '../services/UserAuthService';
+import cardInventoryService from '../services/CardInventoryService';
+
+export const userAuthLoginStart= () => ({
+    type: 'KUBE_CARDS_USER_AUTH_LOGIN_START'
+});
+
+export const userAuthLoginComplete = (userId: string, givenName: string, emails: string[]) => ({
+    type: 'KUBE_CARDS_USER_AUTH_LOGIN_COMPLETE',
+    emails,
+    givenName,
+    userId
+});
+
+export const userAuthLoginError = (error: string) => ({
+    type: 'KUBE_CARDS_USER_AUTH_LOGIN_ERROR',
     error
 });
 
-const msalConfig: Msal.Configuration = {
-    auth: {
-        clientId: process.env.REACT_APP_MSAL_CLIENT_ID || '',
-        authority: process.env.REACT_APP_MSAL_AUTHORITY || ''
-    },
-    cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: true
-    }
-};
+export const userAuthLogout = () => ({
+    type: 'KUBE_CARDS_USER_AUTH_LOGOUT'
+});
 
-const myMSALObj = new Msal.UserAgentApplication(msalConfig);
+export const userAuthCards = (cards: []) => ({
+    type: 'KUBE_CARDS_USER_AUTH_CARDS',
+    cards
+});
+
+export const userAuthGetCards = () => {
+    return async (dispatch: Dispatch) => {
+        var cards = await cardInventoryService.getCards();
+
+        dispatch(userAuthCards(cards));
+    };
+}
 
 export const userAuthMsalLogin = () => {
-    return async (dispatch: Dispatch) => {
+    return async (dispatch: any) => {
         try {
-            dispatch(userAuthLogin('loggingIn'));
+            dispatch(userAuthLoginStart());
 
-            const requestObj = {
-                scopes: ["openid"]
-            };
+            const { emails, givenName, userId } = await userAuthService.login();
 
-            const response = await myMSALObj.loginPopup(requestObj);
+            dispatch(userAuthLoginComplete(userId, givenName, emails));
 
-            dispatch(userAuthLogin('loggedIn'));
+            dispatch(userAuthGetCards());
         }
         catch (err) {
-            dispatch(userAuthLogin('loggedOut', err.toString()));
+            dispatch(userAuthLoginError(err.toString()));
         }
+    };
+};
+
+export const userAuthMsalLogout = () => {
+    return async (dispatch: Dispatch) => {
+        dispatch(userAuthLogout());
     };
 };

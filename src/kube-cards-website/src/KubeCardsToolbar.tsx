@@ -12,6 +12,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { userAuthMsalLogin } from './actions/UserAuthActions';
 import { IKubeCardsStore } from './KubeCardsStore';
 import { Action } from 'redux';
+import KubeCardsAuth from './KubeCardsAuth';
 
 const styles = createStyles({
     grow: {
@@ -26,15 +27,13 @@ const styles = createStyles({
 });
 
 export interface Props extends WithStyles<typeof styles> {
-    allowLogin: boolean;
-    onLogin: () => void;
     onOpen: () => void;
     open: boolean;
 };
 
 class KubeCardsToolbar extends React.PureComponent<Props> {
     render() {
-        const { allowLogin, classes, onLogin, onOpen, open } = this.props;
+        const { classes, onOpen, open } = this.props;
 
         return (
             <div className={classes.grow}>
@@ -45,7 +44,7 @@ class KubeCardsToolbar extends React.PureComponent<Props> {
                     <Typography className={classes.grow} color="inherit" variant="h6">
                         Kube Cards
                     </Typography>
-                    <Button className={classNames(!allowLogin && classes.hide)} color="inherit" onClick={onLogin}>Login</Button>
+                    <KubeCardsAuth />
                 </Toolbar>
             </div>
         );
@@ -54,16 +53,12 @@ class KubeCardsToolbar extends React.PureComponent<Props> {
 
 function mapStateToProps(state: any) {
     return {
-        allowLogin: state.userAuth.state === 'loggedOut',
         open: state.appDrawer
     };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch<IKubeCardsStore, void, Action>) {
     return {
-        onLogin: () => {
-            dispatch(userAuthMsalLogin());
-        },
         onOpen: () => {
             dispatch(openAppDrawer(true));
         }

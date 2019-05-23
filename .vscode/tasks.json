@@ -1,0 +1,34 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/CardInventoryService/CardInventoryService.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "website-start",
+            "command": "yarn",
+            "type": "process",
+            "args": [
+                "start"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/kube-cards-website",
+                "env": {
+                    "MSAL_AUTHORITY": "${config:kube-cards.website.MSAL_AUTHORITY}",
+                    "MSAL_CLIENT_ID": "${config:kube-cards.website.MSAL_CLIENT_ID}",
+                    "MSAL_IMPERSONATION_SCOPE": "${config:kube-cards.website.MSAL_IMPERSONATION_SCOPE}",
+                    "CARDS_INVENTORY_SERVICE_BASE_URI": "${config:kube-cards.website.CARDS_INVENTORY_SERVICE_BASE_URI}"
+                }
+            }
+        }
+    ]
+}
