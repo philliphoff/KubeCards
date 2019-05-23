@@ -12,6 +12,22 @@
                 "${workspaceFolder}/src/CardInventoryService/CardInventoryService.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "website-start",
+            "command": "yarn",
+            "type": "process",
+            "args": [
+                "start"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/kube-cards-website",
+                "env": {
+                    "REACT_APP_MSAL_AUTHORITY": "${config:kube-cards.website.REACT_APP_MSAL_AUTHORITY}",
+                    "REACT_APP_MSAL_CLIENT_ID": "${config:kube-cards.website.REACT_APP_MSAL_CLIENT_ID}",
+                    "REACT_APP_CARDS_INVENTORY_SERVICE_BASE_URI": "${config:kube-cards.website.REACT_APP_CARDS_INVENTORY_SERVICE_BASE_URI}"
+                }
+            }
         }
     ]
 }

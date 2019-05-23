@@ -56,7 +56,7 @@ const KubeCardsAuth: React.FunctionComponent<Props> = props => {
                                 <DialogContent>
                                     <Grid alignItems='center' container direction='row'>
                                         <Avatar className={classes.bigAvatar}>{userInitials}</Avatar>
-                                        <Grid direction='column'>
+                                        <Grid container direction='column'>
                                             <Typography variant='h6'>{givenName}</Typography>
                                             <Typography variant='body1'>{email}</Typography>
                                         </Grid>

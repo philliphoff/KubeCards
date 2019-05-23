@@ -18,15 +18,20 @@ export interface IUserAuthService {
 class MsalUserAuthService implements IUserAuthService {
     private readonly myMSALObj: Msal.UserAgentApplication;
 
-    private readonly requestObj = {
-        scopes: ["openid"]
+    private readonly loginRequestObj = {
+        scopes: ['openid']
+    };
+
+    private readonly tokenRequestObj = {
+        scopes: ['https://kubecardstenant.onmicrosoft.com/KubeCardsApp/user_impersonation']
     };
 
     constructor(authority: string, clientId: string) {
         const msalConfig: Msal.Configuration = {
             auth: {
                 authority,
-                clientId
+                clientId,
+                validateAuthority: false
             },
             cache: {
                 cacheLocation: 'localStorage',
@@ -39,11 +44,11 @@ class MsalUserAuthService implements IUserAuthService {
 
     async aquireToken(): Promise<UserAuthResponse> {
         try {
-            return await this.myMSALObj.acquireTokenSilent(this.requestObj);
+            return await this.myMSALObj.acquireTokenSilent(this.tokenRequestObj);
         }
         catch (err) {
             if (err.errorMessage.indexOf("interaction_required") !== -1) {
-                return await this.myMSALObj.acquireTokenPopup(this.requestObj);
+                return await this.myMSALObj.acquireTokenPopup(this.tokenRequestObj);
             }
 
             throw err;
@@ -51,7 +56,7 @@ class MsalUserAuthService implements IUserAuthService {
     }
 
     async login(): Promise<UserLoginResponse> {
-        const response = await this.myMSALObj.loginPopup(this.requestObj);
+        const response = await this.myMSALObj.loginPopup(this.loginRequestObj);
 
         const { account, uniqueId: userId } = response;        
         const idToken: any = account.idToken;
