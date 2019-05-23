@@ -1,5 +1,10 @@
 import userAuthService, { IUserAuthService } from './UserAuthService';
 
+interface IGetCardsResponse {
+    userId: string;
+    cards: [];
+}
+
 export interface ICardInventoryService {
     getCards(): Promise<[]>;
 }
@@ -24,7 +29,9 @@ class KubeCardsInventoryService implements ICardInventoryService {
             `${this.baseUri}/api/cards`,
             request);
 
-        return [];
+        const responseJson: IGetCardsResponse = await response.json();
+
+        return responseJson.cards;
     }
 }
 

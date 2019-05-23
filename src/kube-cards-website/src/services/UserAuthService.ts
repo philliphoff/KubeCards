@@ -22,11 +22,9 @@ class MsalUserAuthService implements IUserAuthService {
         scopes: ['openid']
     };
 
-    private readonly tokenRequestObj = {
-        scopes: ['https://kubecardstenant.onmicrosoft.com/KubeCardsApp/user_impersonation']
-    };
+    private readonly tokenRequestObj: Msal.AuthenticationParameters;
 
-    constructor(authority: string, clientId: string) {
+    constructor(authority: string, clientId: string, impersonationScope: string) {
         const msalConfig: Msal.Configuration = {
             auth: {
                 authority,
@@ -37,6 +35,10 @@ class MsalUserAuthService implements IUserAuthService {
                 cacheLocation: 'localStorage',
                 storeAuthStateInCookie: true
             }
+        };
+
+        this.tokenRequestObj = {
+            scopes: [ impersonationScope ]
         };
 
         this.myMSALObj = new Msal.UserAgentApplication(msalConfig);
@@ -69,6 +71,9 @@ class MsalUserAuthService implements IUserAuthService {
     }
 }
 
-const userAuthService: IUserAuthService = new MsalUserAuthService(process.env.REACT_APP_MSAL_AUTHORITY || '', process.env.REACT_APP_MSAL_CLIENT_ID || '');
+const userAuthService: IUserAuthService = new MsalUserAuthService(
+    process.env.REACT_APP_MSAL_AUTHORITY || '',
+    process.env.REACT_APP_MSAL_CLIENT_ID || '',
+    process.env.REACT_APP_MSAL_IMPERSONATION_SCOPE || '');
 
 export default userAuthService;

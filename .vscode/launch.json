@@ -21,7 +21,8 @@
                 "AAD_B2C_Instance": "${config:kube-cards.AAD_B2C_Instance}",
                 "AAD_B2C_ClientId": "${config:kube-cards.AAD_B2C_ClientId}",
                 "AAD_B2C_Domain": "${config:kube-cards.AAD_B2C_Domain}",
-                "AAD_B2C_SignUpSignInPolicyId": "${config:kube-cards.AAD_B2C_SignUpSignInPolicyId}"
+                "AAD_B2C_SignUpSignInPolicyId": "${config:kube-cards.AAD_B2C_SignUpSignInPolicyId}",
+                "CardsDBConnectionString": "${config:kube-cards.CardsDBConnectionString}"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
