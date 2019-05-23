@@ -23,10 +23,10 @@
             "options": {
                 "cwd": "${workspaceFolder}/src/kube-cards-website",
                 "env": {
-                    "REACT_APP_MSAL_AUTHORITY": "${config:kube-cards.website.REACT_APP_MSAL_AUTHORITY}",
-                    "REACT_APP_MSAL_CLIENT_ID": "${config:kube-cards.website.REACT_APP_MSAL_CLIENT_ID}",
-                    "REACT_APP_MSAL_IMPERSONATION_SCOPE": "${config:kube-cards.website.REACT_APP_MSAL_IMPERSONATION_SCOPE}",
-                    "REACT_APP_CARDS_INVENTORY_SERVICE_BASE_URI": "${config:kube-cards.website.REACT_APP_CARDS_INVENTORY_SERVICE_BASE_URI}"
+                    "MSAL_AUTHORITY": "${config:kube-cards.website.MSAL_AUTHORITY}",
+                    "MSAL_CLIENT_ID": "${config:kube-cards.website.MSAL_CLIENT_ID}",
+                    "MSAL_IMPERSONATION_SCOPE": "${config:kube-cards.website.MSAL_IMPERSONATION_SCOPE}",
+                    "CARDS_INVENTORY_SERVICE_BASE_URI": "${config:kube-cards.website.CARDS_INVENTORY_SERVICE_BASE_URI}"
                 }
             }
         }

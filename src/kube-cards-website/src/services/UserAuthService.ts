@@ -1,5 +1,7 @@
 import * as Msal from 'msal';
 
+import environmentService from './EnvironmentService';
+
 export interface UserLoginResponse {
     emails: string[];
     givenName: string;
@@ -72,8 +74,8 @@ class MsalUserAuthService implements IUserAuthService {
 }
 
 const userAuthService: IUserAuthService = new MsalUserAuthService(
-    process.env.REACT_APP_MSAL_AUTHORITY || '',
-    process.env.REACT_APP_MSAL_CLIENT_ID || '',
-    process.env.REACT_APP_MSAL_IMPERSONATION_SCOPE || '');
+    environmentService.getValue('MSAL_AUTHORITY') || '',
+    environmentService.getValue('MSAL_CLIENT_ID') || '',
+    environmentService.getValue('MSAL_IMPERSONATION_SCOPE') || '');
 
 export default userAuthService;

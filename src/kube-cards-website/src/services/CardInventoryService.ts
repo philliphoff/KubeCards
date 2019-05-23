@@ -1,3 +1,4 @@
+import environmentService from './EnvironmentService';
 import userAuthService, { IUserAuthService } from './UserAuthService';
 
 interface IGetCardsResponse {
@@ -35,8 +36,8 @@ class KubeCardsInventoryService implements ICardInventoryService {
     }
 }
 
-const cardInventoryService = new KubeCardsInventoryService(
-    process.env.REACT_APP_CARDS_INVENTORY_SERVICE_BASE_URI || '',
+const cardInventoryService: ICardInventoryService = new KubeCardsInventoryService(
+    environmentService.getValue('CARDS_INVENTORY_SERVICE_BASE_URI') || '',
     userAuthService);
 
 export default cardInventoryService;
