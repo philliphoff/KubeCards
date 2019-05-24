@@ -23,6 +23,27 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MSAL_AUTHORITY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-website.fullname" . }}
+                  key: msalAuthority
+            - name: MSAL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-website.fullname" . }}
+                  key: msalClientId
+            - name: MSAL_IMPERSONATION_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-website.fullname" . }}
+                  key: msalImpersonationScope
+            - name: CARDS_INVENTORY_SERVICE_BASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-website.fullname" . }}
+                  key: cardsInventoryServiceBaseUri
           ports:
             - name: http
               containerPort: 80
