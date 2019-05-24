@@ -1,5 +1,6 @@
 {{- $fullName := include "kube-cards-ingress.fullname" . -}}
 {{- $websiteFullName := include "kube-cards-ingress.websitefullname" . -}}
+{{- $inventoryServiceFullName := include "kube-cards-ingress.inventoryservicefullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -28,14 +29,14 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ .Values.ingress.host | quote }}
       http:
         paths:
-        {{- range .paths }}
-          - path: {{ . }}
+          - path: /api/cards
+            backend:
+              serviceName: {{ $inventoryServiceFullName }}
+              servicePort: http
+          - path: /
             backend:
               serviceName: {{ $websiteFullName }}
               servicePort: http
-        {{- end }}
-  {{- end }}

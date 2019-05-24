@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kube-cards-inventory-service.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kube-cards-inventory-service.name" . }}
+    helm.sh/chart: {{ include "kube-cards-inventory-service.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kube-cards-inventory-service.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kube-cards-inventory-service.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: environment
+            - name: AAD_B2C_Instance
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cInstance
+            - name: AAD_B2C_ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cClientId
+            - name: AAD_B2C_Domain
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cDomain
+            - name: AAD_B2C_SignUpSignInPolicyId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cSignUpSignInPolicyId
+            - name: CardsDBConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: cardsDbConnectionString
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          {{- if .Values.probes.liveness }}
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+          {{- end }}
+          {{- if .Values.probes.readyness }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

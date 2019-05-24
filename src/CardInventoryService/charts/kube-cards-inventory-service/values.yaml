@@ -1,19 +1,32 @@
-# Default values for kube-cards-ingress.
+# Default values for kube-cards-inventory-service.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: kubecardsregistry.azurecr.io/kube-cards-inventory-service
+  tag: "2703897"
+  pullPolicy: IfNotPresent
+
+secrets:
+  environment: ""
+  b2cInstance: ""
+  b2cClientId: ""
+  b2cDomain: ""
+  b2cSignUpSignInPolicyId: ""
+  cardsDbConnectionString: ""
+
+probes:
+  liveness: true
+  readyness: true
 
 nameOverride: ""
 fullnameOverride: ""
 
-ingress:
-  issuer: letsencrypt-prod
-
-  host: staging.kubecards.net
-
-  tls:
-    - hosts:
-      - staging.kubecards.net
-      secretName: tls-staging-secret
+service:
+  type: ClusterIP
+  port: 80
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

@@ -6,8 +6,14 @@ replicaCount: 1
 
 image:
   repository: kubecardsregistry.azurecr.io/kube-cards-website
-  tag: "2652253"
+  tag: "2703277"
   pullPolicy: IfNotPresent
+
+secrets:
+  msalAuthority: ""
+  msalClientId: ""
+  msalImpersonationScope: ""
+  cardsInventoryServiceBaseUri: ""
 
 nameOverride: ""
 fullnameOverride: ""
