@@ -2,3 +2,6 @@ dependencies:
   - name: kube-cards-website
     version: 0.1.0
     repository: file://../../src/kube-cards-website/charts/kube-cards-website
+  - name: kube-cards-inventory-service
+    version: 0.1.0
+    repository: file://../../src/CardInventoryService/charts/kube-cards-inventory-service
