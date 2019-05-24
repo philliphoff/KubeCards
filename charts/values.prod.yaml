@@ -1,7 +1,5 @@
 kube-cards-ingress:
   ingress:
-    issuer: letsencrypt-prod
-
     hosts:
     - host: prod.kubecards.net
       paths: [ / ]

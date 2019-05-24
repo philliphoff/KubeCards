@@ -9,6 +9,18 @@ image:
   tag: "2703897"
   pullPolicy: IfNotPresent
 
+secrets:
+  environment: ""
+  b2cInstance: ""
+  b2cClientId: ""
+  b2cDomain: ""
+  b2cSignUpSignInPolicyId: ""
+  cardsDbConnectionString: ""
+
+probes:
+  liveness: true
+  readyness: true
+
 nameOverride: ""
 fullnameOverride: ""
 

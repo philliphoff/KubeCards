@@ -23,18 +23,53 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: environment
+            - name: AAD_B2C_Instance
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cInstance
+            - name: AAD_B2C_ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cClientId
+            - name: AAD_B2C_Domain
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cDomain
+            - name: AAD_B2C_SignUpSignInPolicyId
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: b2cSignUpSignInPolicyId
+            - name: CardsDBConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-inventory-service.fullname" . }}
+                  key: cardsDbConnectionString
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          {{- if .Values.probes.liveness }}
           livenessProbe:
             httpGet:
-              path: /
+              path: /live
               port: http
+          {{- end }}
+          {{- if .Values.probes.readyness }}
           readinessProbe:
             httpGet:
-              path: /
+              path: /ready
               port: http
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
