@@ -4,7 +4,12 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/kube-cards-website
 
 pool:
   vmImage: 'ubuntu-latest'
