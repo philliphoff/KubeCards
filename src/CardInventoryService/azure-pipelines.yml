@@ -9,8 +9,8 @@ trigger:
     - master
   paths:
     include:
-    - src/CardInventoryService
-    - src/KubeCards.Models
+    - src/CardInventoryService/*
+    - src/KubeCards.Models/*
 
 pool:
   vmImage: 'ubuntu-latest'

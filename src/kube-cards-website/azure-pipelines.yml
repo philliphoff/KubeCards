@@ -9,7 +9,7 @@ trigger:
     - master
   paths:
     include:
-    - src/kube-cards-website
+    - src/kube-cards-website/*
 
 pool:
   vmImage: 'ubuntu-latest'
