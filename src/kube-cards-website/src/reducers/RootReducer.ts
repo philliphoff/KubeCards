@@ -1,14 +1,17 @@
 import { combineReducers } from 'redux';
 
 import appDrawer from './AppDrawerReducer';
-import userAuth from './UserAuthReducer';
+import userAuth, { IUserAuthStore } from './UserAuthReducer';
+import play, { IPlayStore } from './PlayReducer';
 
 export interface IRootStore {
     appDrawer: boolean;
-    userAuth: boolean;
+    play: IPlayStore;
+    userAuth: IUserAuthStore;
 }
 
 export default combineReducers({
     appDrawer,
+    play,
     userAuth
 });

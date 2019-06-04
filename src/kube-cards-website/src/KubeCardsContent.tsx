@@ -5,6 +5,8 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 
+import KubeCardsPlay from './KubeCardsPlay';
+
 const styles = (theme: any) => ({
     root: {
         ...theme.mixins.gutters(),
@@ -28,9 +30,7 @@ function KubeCardsContent(props: Props) {
                 </Paper>
             </Route>
             <Route path='/play'>
-                <Paper className={classes.root}>
-                    <Typography variant="h5">Let's begin a game!</Typography>
-                </Paper>
+                <KubeCardsPlay />
             </Route>
         </Switch>
     );
