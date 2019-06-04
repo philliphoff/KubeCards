@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace KubeCards.Models
+﻿namespace KubeCards.Models
 {
     public class DeckInventory
     {
