@@ -6,16 +6,32 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SettingsIcon from '@material-ui/icons/Settings';
 import GamesIcon from '@material-ui/icons/Games';
-import AllOutIcon from '@material-ui/icons/AllOut';
+import { Link as RouterLink } from 'react-router-dom';
+
+class ListItemLink extends React.Component<{icon: any, primary: string, to: string}> {
+    renderLink: any = React.forwardRef((itemProps, ref: any) => (
+    // with react-router-dom@^5.0.0 use `ref` instead of `innerRef`
+    <RouterLink to={this.props.to} {...itemProps} innerRef={ref} />
+    ));
+
+    render() {
+    const { icon, primary } = this.props;
+    return (
+        <li>
+        <ListItem button component={this.renderLink}>
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={primary} />
+        </ListItem>
+        </li>
+    );
+    }
+}
 
 const KubeCardsDrawerContent: React.FunctionComponent = () => {
     return (
         <div>
             <List>
-                <ListItem button key='Play'>
-                    <ListItemIcon><GamesIcon /></ListItemIcon>
-                    <ListItemText primary='Play' />
-                </ListItem>
+                <ListItemLink to='/play' primary='Play' icon={<GamesIcon />} />
             </List>
             <Divider />
             <List>

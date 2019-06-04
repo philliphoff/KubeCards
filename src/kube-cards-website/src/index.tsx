@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter as Router } from 'react-router-dom';
 import './index.css';
 import KubeCardsApp from './KubeCardsApp';
 import * as serviceWorker from './serviceWorker';
@@ -9,7 +10,9 @@ import store from './KubeCardsStore';
 
 ReactDOM.render(
     <Provider store={store}>
-        <KubeCardsApp />
+        <Router>
+            <KubeCardsApp />
+        </Router>
     </Provider>,
     document.getElementById('root'));
 

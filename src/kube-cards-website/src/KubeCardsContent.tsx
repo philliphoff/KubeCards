@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, HashRouter as Router, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -20,21 +20,19 @@ function KubeCardsContent(props: Props) {
     const { classes } = props;
 
     return (
-        <Router>
-            <Switch>
-                <Route exact path='/'>
-                    <Paper className={classes.root}>
-                        <Typography variant="h5">Let's play a game!</Typography>
-                        <Typography>Login to start playing.</Typography>
-                    </Paper>
-                </Route>
-                <Route path='/play'>
-                    <Paper className={classes.root}>
-                        <Typography variant="h5">Let's begin a game!</Typography>
-                    </Paper>
-                </Route>
-            </Switch>
-        </Router>
+        <Switch>
+            <Route exact path='/'>
+                <Paper className={classes.root}>
+                    <Typography variant="h5">Let's play a game!</Typography>
+                    <Typography>Login to start playing.</Typography>
+                </Paper>
+            </Route>
+            <Route path='/play'>
+                <Paper className={classes.root}>
+                    <Typography variant="h5">Let's begin a game!</Typography>
+                </Paper>
+            </Route>
+        </Switch>
     );
 };
 
