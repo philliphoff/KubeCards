@@ -9,11 +9,41 @@ import { IPlayStore, KubeCardsPlayOpponentType, KubeCardsPlayState } from './red
 import KubeCardsPlayOpponentChoice from './components/play/KubeCardsPlayOpponentChoice';
 import { IKubeCardsStore } from './KubeCardsStore';
 
+interface PlayStep {
+    finalState?: KubeCardsPlayState;
+    key: string;
+    label: string;
+    render: () => any;
+    state: KubeCardsPlayState;
+}
+
+const steps: PlayStep[] = [
+    {
+        key: 'chooseOpponent',
+        label: 'Choose an opponent',
+        state: KubeCardsPlayState.ChooseOpponent,
+        render: () => <KubeCardsPlayOpponentChoice />
+    },
+    {
+        key: 'chooseDeck',
+        label: 'Choose a deck',
+        state: KubeCardsPlayState.ChooseDeck,
+        render: () => null
+    },
+    {
+        key: 'confirmPlay',
+        label: 'Confirm play',
+        state: KubeCardsPlayState.ConfirmPlay,
+        render: () => null,
+        finalState: KubeCardsPlayState.Playing
+    }
+];
+
 interface KubeCardsPlayProps {
     canMoveNext: boolean;
-    onMoveBack: (currentState: KubeCardsPlayState) => void;
-    onMoveNext: (currentState: KubeCardsPlayState) => void;
-    state: KubeCardsPlayState;
+    currentStep: number;
+    onMoveToState: (currentState: KubeCardsPlayState) => void;
+    steps: PlayStep[];
 }
 
 class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
@@ -25,63 +55,51 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
     }
 
     render() {
-        const { canMoveNext, state } = this.props;
-        const step = KubeCardsPlay.getStep(state);
+        const { canMoveNext, currentStep, steps } = this.props;
         return (
             <div>
-                <Stepper activeStep={step}>
-                    <Step>
-                        <StepLabel>Choose an opponent</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel>Choose a deck</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel>Confirm play</StepLabel>
-                    </Step>
+                <Stepper activeStep={currentStep}>
+                    {
+                        steps.map(step => (
+                            <Step key={step.key}>
+                                <StepLabel>{step.label}</StepLabel>
+                            </Step>
+                        ))
+                    }
                 </Stepper>
                 <div>
-                    { this.renderStep() }
+                    { steps[currentStep].render() }
                 </div>
                 <div>
-                    <Button disabled={state === KubeCardsPlayState.ChooseOpponent} onClick={this.onMoveBackClick}>Back</Button>
-                    <Button disabled={!canMoveNext} color='primary' onClick={this.onMoveNextClick} variant='contained'>{state === KubeCardsPlayState.ConfirmPlay ? 'Play' : 'Next' }</Button>
+                    <Button disabled={currentStep === 0} onClick={this.onMoveBackClick}>Back</Button>
+                    <Button disabled={!canMoveNext} color='primary' onClick={this.onMoveNextClick} variant='contained'>{currentStep === steps.length - 1 ? 'Play' : 'Next' }</Button>
                 </div>
             </div>
         );
     }
 
-    private renderStep() {
-        const { state } = this.props;
-
-        switch (state) {
-            case KubeCardsPlayState.ChooseOpponent: return <KubeCardsPlayOpponentChoice />;
-        }
-
-        return null;
-    }
-
     private onMoveBackClick() {
-        const { onMoveBack, state } = this.props;
+        const { currentStep, onMoveToState, steps } = this.props;
 
-        if (onMoveBack) {
-            onMoveBack(state);
+        if (currentStep > 0 && onMoveToState) {
+            onMoveToState(steps[currentStep - 1].state);
         }
     }
 
     private onMoveNextClick() {
-        const { onMoveNext, state } = this.props;
+        const { currentStep, onMoveToState, steps } = this.props;
 
-        if (onMoveNext) {
-            onMoveNext(state);
-        }
-    }
+        if (onMoveToState) {
+            if (currentStep < steps.length - 1) {
+                onMoveToState(steps[currentStep + 1].state);
+            }
+            else {
+                const finalState = steps[currentStep].finalState;
 
-    private static getStep(state: KubeCardsPlayState): number {
-        switch (state) {
-            case KubeCardsPlayState.ChooseDeck: return 1;
-            case KubeCardsPlayState.ConfirmPlay: return 2;
-            default: return 0;
+                if (finalState !== undefined) {
+                    onMoveToState(finalState);
+                }
+            }
         }
     }
 }
@@ -102,37 +120,26 @@ function canMoveNext(state: IPlayStore): boolean {
     }
 }
 
-function getPreviousState(currentState: KubeCardsPlayState): KubeCardsPlayState {
-    switch (currentState) {
-        case KubeCardsPlayState.ChooseDeck: return KubeCardsPlayState.ChooseOpponent;
-        case KubeCardsPlayState.ConfirmPlay: return KubeCardsPlayState.ChooseDeck;
-        default: throw new Error('Cannot go back to the previous state in state: ' + currentState.toString());
-    }
-}
-
-function getNextState(currentState: KubeCardsPlayState): KubeCardsPlayState {
-    switch (currentState) {
-        case KubeCardsPlayState.ChooseOpponent: return KubeCardsPlayState.ChooseDeck;
-        case KubeCardsPlayState.ChooseDeck: return KubeCardsPlayState.ConfirmPlay;
-        case KubeCardsPlayState.ConfirmPlay: return KubeCardsPlayState.Playing;
-        default: throw new Error('Cannot go to the next state in state: ' + currentState.toString());
+function getCurrentStep(state: KubeCardsPlayState): number {
+    switch (state) {
+        case KubeCardsPlayState.ChooseDeck: return 1;
+        case KubeCardsPlayState.ConfirmPlay: return 2;
+        default: return 0;
     }
 }
 
 function mapStateToProps(state: IKubeCardsStore) {
     return {
         canMoveNext: canMoveNext(state.play),
-        state: state.play.state
+        currentStep: getCurrentStep(state.play.state),
+        steps
     };
 }
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        onMoveBack: (currentState: KubeCardsPlayState) => {
-            dispatch(playMoveNext(getPreviousState(currentState)));
-        },
-        onMoveNext: (currentState: KubeCardsPlayState) => {
-            dispatch(playMoveNext(getNextState(currentState)));
+        onMoveToState: (state: KubeCardsPlayState) => {
+            dispatch(playMoveNext(state));
         }
     };
 }
