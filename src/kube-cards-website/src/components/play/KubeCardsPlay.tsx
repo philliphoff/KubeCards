@@ -4,10 +4,10 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
-import { playMoveNext } from './actions/PlayActions';
-import { IPlayStore, KubeCardsPlayOpponentType, KubeCardsPlayState } from './reducers/PlayReducer';
-import KubeCardsPlayOpponentChoice from './components/play/KubeCardsPlayOpponentChoice';
-import { IKubeCardsStore } from './KubeCardsStore';
+import { playMoveNext } from '../../actions/PlayActions';
+import { IPlayStore, KubeCardsPlayOpponentType, KubeCardsPlayState } from '../../reducers/PlayReducer';
+import KubeCardsPlayOpponentChoice from './KubeCardsPlayOpponentChoice';
+import { IKubeCardsStore } from '../../KubeCardsStore';
 
 interface PlayStep {
     finalState?: KubeCardsPlayState;
