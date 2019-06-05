@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DecksService.Data;
+using KubeCards.Common;
 
 namespace DecksService
 {
@@ -33,10 +34,10 @@ namespace DecksService
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options =>
                 {
-                    options.Instance = this.Configuration["AAD_B2C_Instance"];
-                    options.ClientId = this.Configuration["AAD_B2C_ClientId"];
-                    options.Domain = this.Configuration["AAD_B2C_Domain"];
-                    options.SignUpSignInPolicyId = this.Configuration["AAD_B2C_SignUpSignInPolicyId"];
+                    options.Instance = this.Configuration[AuthConstants.B2CInstance];
+                    options.ClientId = this.Configuration[AuthConstants.B2CClientId];
+                    options.Domain = this.Configuration[AuthConstants.B2CDomain];
+                    options.SignUpSignInPolicyId = this.Configuration[AuthConstants.B2CSignUpSignInPolicyId];
                 });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

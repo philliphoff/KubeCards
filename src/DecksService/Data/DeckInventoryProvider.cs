@@ -112,8 +112,8 @@ namespace DecksService.Data
 
         private DocumentClient GetCosmosDbDocumentClient()
         {
-            var endpointUri = new Uri(this.configuration["DecksDB_Endpoint"]);
-            string authKey = this.configuration["DecksDB_AuthKey"];
+            var endpointUri = new Uri(this.configuration[Constants.DecksDbEndpoint]);
+            string authKey = this.configuration[Constants.DecksDbAuthKey];
             var documentClient = new DocumentClient(endpointUri, authKey);
             return documentClient;
         }
@@ -158,8 +158,8 @@ namespace DecksService.Data
 
         private async Task<GetDeckResult> ReadDeckFromDatabaseAsync(DocumentClient documentClient, string deckId)
         {
-            string databaseId = this.configuration["DecksDB_DatabaseName"];
-            string collectionId = this.configuration["DecksDB_Collection"];
+            string databaseId = this.configuration[Constants.DecksDbDatabaseName];
+            string collectionId = this.configuration[Constants.DecksDbCollection];
             Uri documentUri = UriFactory.CreateDocumentUri(databaseId, collectionId, deckId);
             var requestOptions = new RequestOptions { PartitionKey = new PartitionKey(deckId) };
 
@@ -170,7 +170,7 @@ namespace DecksService.Data
             }
             catch (DocumentClientException dce)
             {
-                if (StringComparer.OrdinalIgnoreCase.Equals("NotFound", dce.Error.Code))
+                if (StringComparer.OrdinalIgnoreCase.Equals(Constants.CosmosDbNotFoundErrorCode, dce.Error.Code))
                 {
                     return new GetDeckResult() { Deck = null, DocumentUri = documentUri };
                 }
@@ -195,8 +195,8 @@ namespace DecksService.Data
 
         private Uri GetDocumentCollectionUri()
         {
-            string databaseId = this.configuration["DecksDB_DatabaseName"];
-            string collectionId = this.configuration["DecksDB_Collection"];
+            string databaseId = this.configuration[Constants.DecksDbDatabaseName];
+            string collectionId = this.configuration[Constants.DecksDbCollection];
 
             var collectionUri = UriFactory.CreateDocumentCollectionUri(databaseId, collectionId);
             return collectionUri;
@@ -236,7 +236,7 @@ namespace DecksService.Data
 
             using (var httpClient = GetHttpClient(authToken))
             {
-                string endpoint = this.configuration["CardsServiceEndpoint"];
+                string endpoint = this.configuration[Constants.CardsServiceEndpoint];
                 Uri uri = new Uri(FormattableString.Invariant($"https://{endpoint}/api/cards"));
                 string result = await httpClient.GetStringAsync(uri);
                 if (string.IsNullOrWhiteSpace(result))

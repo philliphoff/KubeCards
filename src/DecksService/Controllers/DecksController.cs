@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DecksService.Data;
+﻿using DecksService.Data;
+using KubeCards.Common;
 using KubeCards.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
 
 namespace DecksService.Controllers
 {
@@ -28,8 +28,8 @@ namespace DecksService.Controllers
         [HttpGet]
         public async Task<ActionResult<DeckInventory>> GetAsync()
         {
-            string userId = GetUserId();
-            string authToken = GetAuthToken(this.Request);
+            string userId = User.GetUserId();
+            string authToken = this.Request.GetBearerAuthToken();
             var deckInventory = await this.deckInventoryProvider.GetDeckInventoryAsync(userId, authToken);
             return deckInventory;
         }
@@ -68,7 +68,7 @@ namespace DecksService.Controllers
         [HttpDelete("{deckId}")]
         public async Task<IActionResult> DeleteAsync(string deckId)
         {
-            string userId = GetUserId();
+            string userId = User.GetUserId();
             bool success = await this.deckInventoryProvider.DeleteDeckAsync(userId, deckId);
             if (!success)
             {
@@ -85,8 +85,8 @@ namespace DecksService.Controllers
                 return new BadRequestResult();
             }
 
-            string userId = GetUserId();
-            string authToken = GetAuthToken(this.Request);
+            string userId = User.GetUserId();
+            string authToken = this.Request.GetBearerAuthToken();
 
             DeckOperationResult<UpsertResult> operationResult = await this.deckInventoryProvider.UpsertDeckAsync(userId, deckId, deck, authToken);
             if (operationResult.Result == UpsertResult.NotAuthorizedToModifyExisting)
@@ -107,22 +107,6 @@ namespace DecksService.Controllers
             {
                 return operationResult.Deck;
             }
-        }
-
-        private string GetUserId()
-        {
-            string userId = User.Claims.Where(x => StringComparer.OrdinalIgnoreCase.Equals(x.Type, @"http://schemas.microsoft.com/identity/claims/objectidentifier")).FirstOrDefault()?.Value;
-            return userId;
-        }
-
-        private static string GetAuthToken(HttpRequest httpRequest)
-        {
-            string authToken = httpRequest.Headers["Authorization"];
-            if (authToken.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-            {
-                authToken = authToken.Substring("Bearer".Length).Trim();
-            }
-            return authToken;
         }
     }
 }

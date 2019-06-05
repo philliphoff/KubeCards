@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KubeCards.Common\KubeCards.Common.csproj" />
     <ProjectReference Include="..\KubeCards.Models\KubeCards.Models.csproj" />
   </ItemGroup>
 
