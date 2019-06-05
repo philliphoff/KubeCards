@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+﻿using DecksService.Data;
+using KubeCards.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using DecksService.Data;
 
 namespace DecksService
 {
@@ -33,10 +27,10 @@ namespace DecksService
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options =>
                 {
-                    options.Instance = this.Configuration["AAD_B2C_Instance"];
-                    options.ClientId = this.Configuration["AAD_B2C_ClientId"];
-                    options.Domain = this.Configuration["AAD_B2C_Domain"];
-                    options.SignUpSignInPolicyId = this.Configuration["AAD_B2C_SignUpSignInPolicyId"];
+                    options.Instance = this.Configuration[AuthConstants.B2CInstance];
+                    options.ClientId = this.Configuration[AuthConstants.B2CClientId];
+                    options.Domain = this.Configuration[AuthConstants.B2CDomain];
+                    options.SignUpSignInPolicyId = this.Configuration[AuthConstants.B2CSignUpSignInPolicyId];
                 });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

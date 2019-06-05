@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CardInventoryService.Data;
+﻿using CardInventoryService.Data;
+using KubeCards.Common;
 using KubeCards.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace CardInventoryService.Controllers
 {
@@ -28,7 +26,7 @@ namespace CardInventoryService.Controllers
         [HttpGet]
         public ActionResult<CardInventory> Get()
         {
-            string userId = User.Claims.Where(x => StringComparer.OrdinalIgnoreCase.Equals(x.Type, @"http://schemas.microsoft.com/identity/claims/objectidentifier")).FirstOrDefault()?.Value;
+            string userId = User.GetUserId();
             return this.cardInventoryProvider.GetCardInventory(userId);
         }
     }

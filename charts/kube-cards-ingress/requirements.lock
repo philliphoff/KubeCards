@@ -1,9 +1,0 @@
-dependencies:
-- name: kube-cards-website
-  repository: file://../../src/kube-cards-website/charts/kube-cards-website
-  version: 0.1.0
-- name: kube-cards-inventory-service
-  repository: file://../../src/CardInventoryService/charts/kube-cards-inventory-service
-  version: 0.1.0
-digest: sha256:84aea9a57c2cb878c51a63e031d33cd8ebe31c7d88d1e51e23f29854d4df8751
-generated: 2019-05-23T16:33:29.52265-07:00

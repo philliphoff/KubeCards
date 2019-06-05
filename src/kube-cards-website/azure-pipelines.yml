@@ -4,7 +4,12 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/kube-cards-website/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -24,6 +29,7 @@ steps:
     repository: kube-cards-website
 - task: Docker@2
   displayName: Push
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     command: push
     containerRegistry: container-tools-kubecardsregistry
