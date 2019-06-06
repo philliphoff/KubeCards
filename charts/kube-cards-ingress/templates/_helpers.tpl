@@ -38,6 +38,15 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
+{{- define "kube-cards-ingress.decks-service.name" -}}
+{{- "kube-cards-decks-service" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
 {{- define "kube-cards-ingress.inventory-service.name" -}}
 {{- "kube-cards-inventory-service" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
