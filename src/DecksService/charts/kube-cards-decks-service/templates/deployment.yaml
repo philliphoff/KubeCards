@@ -49,11 +49,31 @@ spec:
                 secretKeyRef:
                   name: {{ include "kube-cards-decks-service.fullname" . }}
                   key: b2cSignUpSignInPolicyId
-            - name: CardsDBConnectionString
+            - name: CardsServiceEndpoint
               valueFrom:
                 secretKeyRef:
                   name: {{ include "kube-cards-decks-service.fullname" . }}
-                  key: cardsDbConnectionString
+                  key: cardsServiceEndpoint
+            - name: DecksDB_AuthKey
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-decks-service.fullname" . }}
+                  key: decksDbAuthKey
+            - name: DecksDB_Collection
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-decks-service.fullname" . }}
+                  key: decksDbCollection
+            - name: DecksDB_DatabaseName
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-decks-service.fullname" . }}
+                  key: decksDbDatabaseName
+            - name: DecksDB_Endpoint
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kube-cards-decks-service.fullname" . }}
+                  key: decksDbEndpoint
           ports:
             - name: http
               containerPort: 80

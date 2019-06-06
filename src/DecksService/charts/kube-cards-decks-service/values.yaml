@@ -15,7 +15,11 @@ secrets:
   b2cClientId: ""
   b2cDomain: ""
   b2cSignUpSignInPolicyId: ""
-  cardsDbConnectionString: ""
+  cardsServiceEndpoint: ""
+  decksDbAuthKey: ""
+  decksDbCollection: ""
+  decksDbDatabaseName: ""
+  decksDbEndpoint: ""
 
 probes:
   liveness: true
