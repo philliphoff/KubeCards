@@ -42,7 +42,7 @@ namespace DecksService.Data
                 // If our cached data is stale we update the card information from the card inventory service
                 decks = await VerifyDecksIfNecessaryAsync(documentClient, decks, authToken);
 
-                deckInventory.Decks = decks;
+                deckInventory.Decks = decks ?? Array.Empty<Deck>();
                 return deckInventory;
             }
         }

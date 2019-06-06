@@ -1,4 +1,5 @@
 import { IDeck } from "../reducers/DeckReducer";
+import decksService from "../services/DecksService";
 
 const deckUpdateRefresh = (isRefreshing: boolean) => {
     return {
@@ -19,16 +20,7 @@ export const deckRefresh = () => {
         dispatch(deckUpdateRefresh(true));
 
         try {
-            const decks: IDeck[] = [
-                {
-                    id: 'Deck1',
-                    cards: []
-                },
-                {
-                    id: 'Deck2',
-                    cards: []
-                }
-            ];
+            const decks: IDeck[] = await decksService.getDecks();
             
             dispatch(deckSet(decks));
         }
