@@ -16,7 +16,7 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
         width: 80
     },
     wrapper: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
         position: 'relative'
     },
     buttonProgress: {

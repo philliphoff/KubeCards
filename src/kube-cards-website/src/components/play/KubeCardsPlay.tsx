@@ -8,6 +8,7 @@ import { playMoveNext } from '../../actions/PlayActions';
 import { IPlayStore, KubeCardsPlayOpponentType, KubeCardsPlayState } from '../../reducers/PlayReducer';
 import KubeCardsPlayOpponentChoice from './KubeCardsPlayOpponentChoice';
 import { IKubeCardsStore } from '../../KubeCardsStore';
+import KubeCardsPlayDeckChoice from './KubeCardsPlayDeckChoice';
 
 interface PlayStep {
     finalState?: KubeCardsPlayState;
@@ -28,7 +29,7 @@ const steps: PlayStep[] = [
         key: 'chooseDeck',
         label: 'Choose a deck',
         state: KubeCardsPlayState.ChooseDeck,
-        render: () => null
+        render: () => <KubeCardsPlayDeckChoice />
     },
     {
         key: 'confirmPlay',

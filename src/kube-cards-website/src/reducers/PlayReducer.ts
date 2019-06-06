@@ -24,6 +24,8 @@ const defaultState: IPlayStore = {
 
 const playReducer = (state: IPlayStore = defaultState, action: any) => {
     switch (action.type) {
+        case 'KUBE_CARDS_PLAY_CHOOSE_DECK':
+            return { ...state, deckId: action.deckId };
         case 'KUBE_CARDS_PLAY_CHOOSE_OPPONENT':
             return { ...state, opponentType: action.opponentType};
         case 'KUBE_CARDS_PLAY_MOVE_NEXT':
