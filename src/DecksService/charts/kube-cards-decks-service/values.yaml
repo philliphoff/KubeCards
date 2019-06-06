@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: kubecardsregistry.azurecr.io/kube-cards-decks-service
-  tag: "2703897"
+  tag: "2742044"
   pullPolicy: IfNotPresent
 
 secrets:
