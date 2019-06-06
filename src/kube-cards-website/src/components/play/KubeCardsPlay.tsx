@@ -9,6 +9,7 @@ import { IPlayStore, KubeCardsPlayOpponentType, KubeCardsPlayState } from '../..
 import KubeCardsPlayOpponentChoice from './KubeCardsPlayOpponentChoice';
 import { IKubeCardsStore } from '../../KubeCardsStore';
 import KubeCardsPlayDeckChoice from './KubeCardsPlayDeckChoice';
+import KubeCardsPlayConfirmation from './KubeCardsPlayConfirmation';
 
 interface PlayStep {
     finalState?: KubeCardsPlayState;
@@ -35,7 +36,7 @@ const steps: PlayStep[] = [
         key: 'confirmPlay',
         label: 'Confirm play',
         state: KubeCardsPlayState.ConfirmPlay,
-        render: () => null,
+        render: () => <KubeCardsPlayConfirmation />,
         finalState: KubeCardsPlayState.Playing
     }
 ];
