@@ -13,6 +13,13 @@ trigger:
     - src/KubeCards.Common/*
     - src/KubeCards.Models/*
 
+pr:
+  paths:
+    include:
+    - src/CardInventoryService/*
+    - src/KubeCards.Common/*
+    - src/KubeCards.Models/*
+
 pool:
   vmImage: 'ubuntu-latest'
 
