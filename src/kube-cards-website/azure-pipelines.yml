@@ -11,6 +11,11 @@ trigger:
     include:
     - src/kube-cards-website/*
 
+pr:
+  paths:
+    include:
+    - src/kube-cards-website/*
+
 pool:
   vmImage: 'ubuntu-latest'
 
