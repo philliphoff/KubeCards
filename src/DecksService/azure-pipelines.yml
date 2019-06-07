@@ -9,12 +9,16 @@ trigger:
     - master
   paths:
     include:
-    - src/kube-cards-website/*
+    - src/DecksService/*
+    - src/KubeCards.Common/*
+    - src/KubeCards.Models/*
 
 pr:
   paths:
     include:
-    - src/kube-cards-website/*
+    - src/DecksService/*
+    - src/KubeCards.Common/*
+    - src/KubeCards.Models/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -29,13 +33,13 @@ steps:
   displayName: Build
   inputs:
     command: build
-    dockerFile: src/kube-cards-website/Dockerfile
-    buildContext: src/kube-cards-website
-    repository: kube-cards-website
+    dockerFile: src/DecksService/Dockerfile
+    buildContext: src
+    repository: kube-cards-decks-service
 - task: Docker@2
   displayName: Push
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     command: push
     containerRegistry: container-tools-kubecardsregistry
-    repository: kube-cards-website
+    repository: kube-cards-decks-service
