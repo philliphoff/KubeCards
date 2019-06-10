@@ -14,6 +14,16 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "build-decks-service",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/DecksService/DecksService.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "website-start",
             "command": "yarn",
             "type": "process",
@@ -26,7 +36,8 @@
                     "MSAL_AUTHORITY": "${config:kube-cards.website.MSAL_AUTHORITY}",
                     "MSAL_CLIENT_ID": "${config:kube-cards.website.MSAL_CLIENT_ID}",
                     "MSAL_IMPERSONATION_SCOPE": "${config:kube-cards.website.MSAL_IMPERSONATION_SCOPE}",
-                    "CARDS_INVENTORY_SERVICE_BASE_URI": "${config:kube-cards.website.CARDS_INVENTORY_SERVICE_BASE_URI}"
+                    "CARDS_INVENTORY_SERVICE_BASE_URI": "${config:kube-cards.website.CARDS_INVENTORY_SERVICE_BASE_URI}",
+                    "DECKS_SERVICE_BASE_URI": "${config:kube-cards.website.DECKS_SERVICE_BASE_URI}"
                 }
             }
         }

@@ -14,7 +14,7 @@
             "cwd": "${workspaceFolder}/src/CardInventoryService",
             "stopAtEntry": false,
             "launchBrowser": {
-                "enabled": true
+                "enabled": false
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
@@ -29,6 +29,34 @@
             }
         },
         {
+            "name": "Launch DecksService",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-decks-service",
+            "program": "${workspaceFolder}/src/DecksService/bin/Debug/netcoreapp2.2/DecksService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/DecksService",
+            "stopAtEntry": false,
+            "launchBrowser": {
+                "enabled": false
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "AAD_B2C_Instance": "${config:kube-cards.AAD_B2C_Instance}",
+                "AAD_B2C_ClientId": "${config:kube-cards.AAD_B2C_ClientId}",
+                "AAD_B2C_Domain": "${config:kube-cards.AAD_B2C_Domain}",
+                "AAD_B2C_SignUpSignInPolicyId": "${config:kube-cards.AAD_B2C_SignUpSignInPolicyId}",
+                "CardsServiceEndpoint": "${config:kube-cards.decks.CardsServiceEndpoint}",
+                "DecksDB_AuthKey": "${config:kube-cards.decks.DecksDB_AuthKey}",
+                "DecksDB_Collection": "${config:kube-cards.decks.DecksDB_Collection}",
+                "DecksDB_DatabaseName": "${config:kube-cards.decks.DecksDB_DatabaseName}",
+                "DecksDB_Endpoint": "${config:kube-cards.decks.DecksDB_Endpoint}"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Website in Chrome",
@@ -37,6 +65,12 @@
             "sourceMapPathOverrides": {
                 "webpack:///src/*": "${webRoot}/*"
             }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch Cluster",
+            "configurations": [ "Launch CardInventoryService", "Launch DecksService" ]
         }
     ]
 }

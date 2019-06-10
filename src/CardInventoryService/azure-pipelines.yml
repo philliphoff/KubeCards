@@ -14,6 +14,9 @@ trigger:
     - src/KubeCards.Models/*
 
 pr:
+  branches:
+    include:
+    - "*"
   paths:
     include:
     - src/CardInventoryService/*

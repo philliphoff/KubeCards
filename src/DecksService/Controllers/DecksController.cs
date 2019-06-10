@@ -61,6 +61,25 @@ namespace DecksService.Controllers
             return result;
         }
 
+        // POST api/decks/starter
+        [ProducesResponseType(typeof(Deck), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("starter")]
+        public async Task<ActionResult<Deck>> PostStarterAsync()
+        {
+            string userId = User.GetUserId();
+            string authToken = this.Request.GetBearerAuthToken();
+            
+            var deck = await this.deckInventoryProvider.CreateStarterDeckAsync(userId, authToken);
+
+            if (deck == null)
+            {
+                return new BadRequestResult();
+            }
+
+            return deck;
+        }
+
         // PUT api/decks/[deckId]
         [ProducesResponseType(typeof(Deck), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Deck), StatusCodes.Status201Created)]

@@ -23,6 +23,29 @@ namespace DecksService.Data
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+        public async Task<Deck> CreateStarterDeckAsync(string userId, string authToken)
+        {
+            var deckInventory = await this.GetDeckInventoryAsync(userId, authToken);
+
+            if (deckInventory.Decks.Any())
+            {
+                return null;
+            }
+
+            var starterCards = await this.CreateStarterCardsAsync(authToken);
+
+            var deckId = ObjectId.GetNewId();
+
+            var deck = new Deck
+            {
+                Cards = starterCards.Cards
+            };
+
+            var result = await this.UpsertDeckAsync(userId, deckId, deck, authToken);
+
+            return result.Deck;
+        }
+
         public async Task<Deck> GetDeckAsync(string userId, string deckId, string authToken)
         {
             if (userId == null)
@@ -71,7 +94,7 @@ namespace DecksService.Data
                 // If our cached data is stale we update the card information from the card inventory service
                 decks = await VerifyDecksIfNecessaryAsync(documentClient, decks, authToken);
 
-                deckInventory.Decks = decks;
+                deckInventory.Decks = decks ?? Array.Empty<Deck>();
                 return deckInventory;
             }
         }
@@ -266,7 +289,7 @@ namespace DecksService.Data
             using (var httpClient = HttpClientProvider.GetHttpClient(authToken))
             {
                 string endpoint = this.configuration[Constants.CardsServiceEndpoint];
-                Uri uri = new Uri(FormattableString.Invariant($"https://{endpoint}/api/cards"));
+                Uri uri = new Uri(FormattableString.Invariant($"{endpoint}/api/cards"));
                 string result = await httpClient.GetStringAsync(uri);
                 if (string.IsNullOrWhiteSpace(result))
                 {
@@ -284,6 +307,24 @@ namespace DecksService.Data
             }
 
             return cards;
+        }
+
+        private async Task<CardInventory> CreateStarterCardsAsync(string authToken)
+        {
+            var cards = new Dictionary<string, Card>(StringComparer.OrdinalIgnoreCase);
+
+            using (var httpClient = HttpClientProvider.GetHttpClient(authToken))
+            {
+                string endpoint = this.configuration[Constants.CardsServiceEndpoint];
+                Uri uri = new Uri(FormattableString.Invariant($"{endpoint}/api/cards/starter"));
+                var response = await httpClient.PostAsync(uri, null);
+
+                response.EnsureSuccessStatusCode();
+
+                var result = await response.Content.ReadAsStringAsync();
+
+                return JsonConvert.DeserializeObject<CardInventory>(result);
+            }
         }
 
         private static JsonSerializerSettings GetJsonSerializerSettings()

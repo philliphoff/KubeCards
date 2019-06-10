@@ -1,14 +1,17 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
+
+import KubeCardsPlay from './components/play/KubeCardsPlay';
 
 const styles = (theme: any) => ({
     root: {
         ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
     }
   });
 
@@ -19,10 +22,17 @@ function KubeCardsContent(props: Props) {
     const { classes } = props;
 
     return (
-        <Paper className={classes.root}>
-            <Typography variant="h5">Let's play a game!</Typography>
-            <Typography>Login to start playing.</Typography>
-        </Paper>
+        <Switch>
+            <Route exact path='/'>
+                <Paper className={classes.root}>
+                    <Typography variant="h5">Let's play a game!</Typography>
+                    <Typography>Login to start playing.</Typography>
+                </Paper>
+            </Route>
+            <Route path='/play'>
+                <KubeCardsPlay />
+            </Route>
+        </Switch>
     );
 };
 

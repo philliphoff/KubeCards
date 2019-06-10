@@ -1,5 +1,5 @@
 import environmentService from './EnvironmentService';
-import userAuthService, { IUserAuthService } from './UserAuthService';
+import fetchService, { IFetchService } from './FetchService';
 
 interface IGetCardsResponse {
     userId: string;
@@ -13,20 +13,15 @@ export interface ICardInventoryService {
 class KubeCardsInventoryService implements ICardInventoryService {
     constructor(
         private readonly baseUri: string,
-        private readonly userAuthService: IUserAuthService) {
+        private readonly fetchService: IFetchService) {
     }
 
     async getCards(): Promise<[]> {
-        const authResponse = await this.userAuthService.aquireToken();
-
         const request: RequestInit = {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${authResponse.accessToken}`
-            }
+            method: 'GET'
         };
 
-        const response = await fetch(
+        const response = await this.fetchService.fetch(
             `${this.baseUri}/api/cards`,
             request);
 
@@ -38,6 +33,6 @@ class KubeCardsInventoryService implements ICardInventoryService {
 
 const cardInventoryService: ICardInventoryService = new KubeCardsInventoryService(
     environmentService.getValue('CARDS_INVENTORY_SERVICE_BASE_URI') || '',
-    userAuthService);
+    fetchService);
 
 export default cardInventoryService;
