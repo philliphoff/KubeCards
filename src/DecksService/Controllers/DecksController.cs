@@ -1,4 +1,4 @@
-﻿using DecksService.Data;
+using DecksService.Data;
 using KubeCards.Common;
 using KubeCards.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -34,13 +34,29 @@ namespace DecksService.Controllers
             return deckInventory;
         }
 
+        // GET api/decks/[deckId]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("{deckId}")]
+        public async Task<ActionResult<Deck>> GetAsync(string deckId)
+        {
+            if (!ObjectId.IsValidId(deckId))
+            {
+                return new BadRequestObjectResult("Invalid deckId");
+            }
+
+            string userId = User.GetUserId();
+            string authToken = this.Request.GetBearerAuthToken();
+            var deck = await this.deckInventoryProvider.GetDeckAsync(userId, deckId, authToken);
+            return deck;
+        }
+
         // POST api/decks
         [ProducesResponseType(typeof(Deck), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<ActionResult<Deck>> PostAsync([FromBody] Deck deck)
         {
-            string deckId = Guid.NewGuid().ToString("N").ToLowerInvariant();
+            string deckId = ObjectId.GetNewId();
             ActionResult<Deck> result = await this.UpsertAsync(deckId, deck);
             return result;
         }
@@ -52,9 +68,9 @@ namespace DecksService.Controllers
         [HttpPut("{deckId}")]
         public async Task<ActionResult<Deck>> PutAsync(string deckId, [FromBody] Deck deck)
         {
-            if (!Guid.TryParseExact(deckId, "N", out Guid _))
+            if (!ObjectId.IsValidId(deckId))
             {
-                return new BadRequestResult();
+                return new BadRequestObjectResult("Invalid deckId");
             }
 
             deckId = deckId.ToLowerInvariant();
@@ -65,9 +81,15 @@ namespace DecksService.Controllers
 
         // DELETE api/decks/[deckId]
         [ProducesResponseType(StatusCodes.Status204NoContent)] // success or the deck didn't exist in the first place
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{deckId}")]
         public async Task<IActionResult> DeleteAsync(string deckId)
         {
+            if (!ObjectId.IsValidId(deckId))
+            {
+                return new BadRequestObjectResult("Invalid deckId");
+            }
+
             string userId = User.GetUserId();
             bool success = await this.deckInventoryProvider.DeleteDeckAsync(userId, deckId);
             if (!success)

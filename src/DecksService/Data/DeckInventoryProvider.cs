@@ -1,4 +1,5 @@
-﻿using KubeCards.Models;
+﻿using KubeCards.Common;
+using KubeCards.Models;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,34 @@ namespace DecksService.Data
         public DeckInventoryProvider(IConfiguration configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
+
+        public async Task<Deck> GetDeckAsync(string userId, string deckId, string authToken)
+        {
+            if (userId == null)
+            {
+                return null;
+            }
+
+            using (DocumentClient documentClient = GetCosmosDbDocumentClient())
+            {
+                GetDeckResult result = await ReadDeckFromDatabaseAsync(documentClient, deckId);
+
+                if (result.Deck == null)
+                {
+                    return null;
+                }
+
+                // So the deck exists in the database. But does the requesting user own it?
+                if (!StringComparer.Ordinal.Equals(result.Deck.UserId, userId))
+                {
+                    return null;
+                }
+
+                await VerifyDecksIfNecessaryAsync(documentClient, new Deck[] { result.Deck }, authToken);
+
+                return result.Deck;
+            }
         }
 
         public async Task<DeckInventory> GetDeckInventoryAsync(string userId, string authToken)
@@ -59,7 +88,7 @@ namespace DecksService.Data
                 GetDeckResult result = await ReadDeckFromDatabaseAsync(documentClient, deckId);
 
                 // Firstly, verify that the deck belongs to the user requesting its deletion
-                if (StringComparer.OrdinalIgnoreCase.Equals(result.Deck?.UserId, userId))
+                if (ObjectId.IdsMatch(result.Deck?.UserId, userId))
                 {
                     // Yup, the user id matches so we're clear to remove the deck from our database
                     await documentClient.DeleteDocumentAsync(result.DocumentUri);
@@ -144,7 +173,7 @@ namespace DecksService.Data
             {
                 var sqlQuerySpec = new SqlQuerySpec("select * from Items i where i.userId = @userIdParameter");
                 sqlQuerySpec.Parameters.Add(new SqlParameter("@userIdParameter", userId));
-                var feedOptions = new FeedOptions { JsonSerializerSettings = GetJsonSerializerSettings() };
+                var feedOptions = new FeedOptions { JsonSerializerSettings = GetJsonSerializerSettings(), EnableCrossPartitionQuery = true };
 
                 Deck[] decks = documentClient.CreateDocumentQuery<Deck>(collectionUri, sqlQuerySpec, feedOptions).ToArray();
                 return decks;
@@ -234,7 +263,7 @@ namespace DecksService.Data
         {
             var cards = new Dictionary<string, Card>(StringComparer.OrdinalIgnoreCase);
 
-            using (var httpClient = GetHttpClient(authToken))
+            using (var httpClient = HttpClientProvider.GetHttpClient(authToken))
             {
                 string endpoint = this.configuration[Constants.CardsServiceEndpoint];
                 Uri uri = new Uri(FormattableString.Invariant($"https://{endpoint}/api/cards"));
@@ -260,13 +289,6 @@ namespace DecksService.Data
         private static JsonSerializerSettings GetJsonSerializerSettings()
         {
             return new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-        }
-
-        private static HttpClient GetHttpClient(string authToken)
-        {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-            return httpClient;
         }
 
         private struct GetDeckResult
