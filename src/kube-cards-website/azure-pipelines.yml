@@ -12,6 +12,9 @@ trigger:
     - src/kube-cards-website/*
 
 pr:
+  branches:
+    include:
+    - "*"
   paths:
     include:
     - src/kube-cards-website/*
