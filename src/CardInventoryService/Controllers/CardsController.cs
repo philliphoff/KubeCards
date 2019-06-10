@@ -29,5 +29,12 @@ namespace CardInventoryService.Controllers
             string userId = User.GetUserId();
             return this.cardInventoryProvider.GetCardInventory(userId);
         }
+
+        [HttpPost("starter")]
+        public ActionResult<CardInventory> PostStarterCards()
+        {
+            string userId = User.GetUserId();
+            return this.cardInventoryProvider.AddStarterCards(userId);
+        }
     }
 }

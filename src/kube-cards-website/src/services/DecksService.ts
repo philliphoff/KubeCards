@@ -8,6 +8,7 @@ interface IGetDecksResponse {
 
 export interface IDecksService {
     createDeck(cards: ICard[]): Promise<IDeck>;
+    createStarterDeck(): Promise<IDeck>;
     getDecks(): Promise<IDeck[]>;
 }
 
@@ -25,6 +26,20 @@ class KubeCardsDecksService implements IDecksService {
 
         const response = await this.fetchService.fetch(
             `${this.baseUri}/api/decks`,
+            request);
+
+        const responseJson: IDeck = await response.json();
+
+        return responseJson;
+    }
+
+    async createStarterDeck(): Promise<IDeck> {
+        const request: RequestInit = {
+            method: 'POST',
+        };
+
+        const response = await this.fetchService.fetch(
+            `${this.baseUri}/api/decks/starter`,
             request);
 
         const responseJson: IDeck = await response.json();

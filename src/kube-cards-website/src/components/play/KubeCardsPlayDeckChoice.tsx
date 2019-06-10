@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { decksLoad } from '../../actions/DecksActions';
+import { decksLoad, decksCreateStarter } from '../../actions/DecksActions';
 import { IKubeCardsStore } from '../../KubeCardsStore';
 import { IDeck } from '../../Models';
 import Typography from '@material-ui/core/Typography';
@@ -18,6 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import WarningIcon from '@material-ui/icons/Warning';
 
 const styles: StyleRulesCallback = (theme: any) => ({
     card: {
@@ -40,6 +41,7 @@ interface KubeCardsPlayDeckChoiceProps extends WithStyles<typeof styles> {
     decks: IDeck[];
     state: DecksState;
     onChooseDeck?: (deckId: string) => void;
+    onCreateStarterDeck?: () => void;
     onLoad?: () => void;
 }
 
@@ -48,6 +50,7 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
         super(props);
 
         this.onClick = this.onClick.bind(this);
+        this.onCreateStarterClick = this.onCreateStarterClick.bind(this);
         this.onRetryClick = this.onRetryClick.bind(this);
     }
 
@@ -90,6 +93,12 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
     }
 
     private renderLoaded() {
+        const { decks } = this.props;
+
+        return decks.length > 0 ? this.renderChooseDecks() : this.renderCreateStarterDeck();
+    }
+
+    private renderChooseDecks() {
         const { chosenDeckId, classes, decks } = this.props;
 
         return (
@@ -114,10 +123,28 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
         );
     }
 
+    private renderCreateStarterDeck() {
+        return (
+            <Container>
+                <Grid alignItems='center' container spacing={2}>
+                    <Grid item>
+                        <WarningIcon color='action' fontSize='large' />
+                    </Grid>
+                    <Grid item>
+                        <Typography>You have no decks.</Typography>
+                    </Grid>
+                    <Grid item>
+                        <Button color='primary' onClick={this.onCreateStarterClick}>Create</Button>
+                    </Grid>
+                </Grid>
+            </Container>
+        );
+    }
+
     private renderFailed() {
         return (
             <Container>
-                <Grid alignItems='center' container>
+                <Grid alignItems='center' container spacing={2}>
                     <Grid item>
                         <ErrorIcon color='error' fontSize='large' />
                     </Grid>
@@ -137,6 +164,14 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
 
         if (onChooseDeck) {
             onChooseDeck(event.currentTarget.id);
+        }
+    }
+
+    private onCreateStarterClick() {
+        const { onCreateStarterDeck } = this.props;
+
+        if (onCreateStarterDeck) {
+            onCreateStarterDeck();
         }
     }
 
@@ -161,6 +196,9 @@ function mapDispatchToProps(dispatch: any) {
     return {
         onChooseDeck: (deckId: string) => {
             dispatch(playChooseDeck(deckId))
+        },
+        onCreateStarterDeck: () => {
+            dispatch(decksCreateStarter());
         },
         onLoad: () => {
             dispatch(decksLoad());

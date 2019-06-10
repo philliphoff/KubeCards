@@ -16,6 +16,23 @@ const decksSet = (decks: IDeck[]) => {
     };
 };
 
+export const decksCreateStarter = () => {
+    return async (dispatch: any) => {
+        dispatch(decksSetState(DecksState.Loading));
+
+        try {
+            const decks: IDeck[] = await decksService.getDecks();
+            
+            dispatch(decksSet(decks));
+
+            decksSetState(DecksState.Loaded);
+        }
+        catch (Error) {
+            dispatch(decksSetState(DecksState.Failed));
+        }
+    };
+};
+
 export const decksLoad = () => {
     return async (dispatch: any) => {
         dispatch(decksSetState(DecksState.Loading));
