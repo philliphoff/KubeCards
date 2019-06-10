@@ -85,10 +85,16 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
 
     private renderLoading() {
         return (
-            <div>
-                <CircularProgress />
-                <Typography>Loading your decks...</Typography>
-            </div>
+            <Container>
+                <Grid alignItems='center' container direction='column' spacing={2}>
+                    <Grid item>
+                        <CircularProgress />
+                    </Grid>
+                    <Grid item>
+                        <Typography>Loading your decks...</Typography>
+                    </Grid>
+                </Grid>
+            </Container>
         );
     }
 
@@ -126,15 +132,15 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
     private renderCreateStarterDeck() {
         return (
             <Container>
-                <Grid alignItems='center' container spacing={2}>
+                <Grid alignItems='center' container justify='center' spacing={2}>
                     <Grid item>
-                        <WarningIcon color='action' fontSize='large' />
+                        <WarningIcon color='primary' fontSize='large' />
                     </Grid>
                     <Grid item>
                         <Typography>You have no decks.</Typography>
                     </Grid>
                     <Grid item>
-                        <Button color='primary' onClick={this.onCreateStarterClick}>Create</Button>
+                        <Button color='primary' onClick={this.onCreateStarterClick}>Create Starter Deck</Button>
                     </Grid>
                 </Grid>
             </Container>

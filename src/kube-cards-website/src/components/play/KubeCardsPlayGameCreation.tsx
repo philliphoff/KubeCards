@@ -10,6 +10,14 @@ import KubeCardsPlayOpponentChoice from './KubeCardsPlayOpponentChoice';
 import { IKubeCardsStore } from '../../KubeCardsStore';
 import KubeCardsPlayDeckChoice from './KubeCardsPlayDeckChoice';
 import KubeCardsPlayConfirmation from './KubeCardsPlayConfirmation';
+import Box from '@material-ui/core/Box';
+import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
+
+const styles: StyleRulesCallback = (theme: any) => ({
+    stepBox: {
+        margin: theme.spacing(2)
+    }
+});
 
 interface PlayStep {
     finalState?: KubeCardsPlayState;
@@ -41,7 +49,7 @@ const steps: PlayStep[] = [
     }
 ];
 
-interface KubeCardsPlayGameCreationProps {
+interface KubeCardsPlayGameCreationProps extends WithStyles<typeof styles> {
     canMoveNext: boolean;
     currentStep: number;
     onMoveToState: (currentState: KubeCardsPlayState) => void;
@@ -57,7 +65,7 @@ class KubeCardsPlayGameCreation extends React.Component<KubeCardsPlayGameCreatio
     }
 
     render() {
-        const { canMoveNext, currentStep, steps } = this.props;
+        const { canMoveNext, classes, currentStep, steps } = this.props;
         return (
             <div>
                 <Stepper activeStep={currentStep}>
@@ -69,9 +77,9 @@ class KubeCardsPlayGameCreation extends React.Component<KubeCardsPlayGameCreatio
                         ))
                     }
                 </Stepper>
-                <div>
+                <Box className={classes.stepBox}>
                     { steps[currentStep].render() }
-                </div>
+                </Box>
                 <div>
                     <Button disabled={currentStep === 0} onClick={this.onMoveBackClick}>Back</Button>
                     <Button disabled={!canMoveNext} color='primary' onClick={this.onMoveNextClick} variant='contained'>{currentStep === steps.length - 1 ? 'Play' : 'Next' }</Button>
@@ -146,4 +154,4 @@ function mapDispatchToProps(dispatch: any) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(KubeCardsPlayGameCreation);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(KubeCardsPlayGameCreation));
