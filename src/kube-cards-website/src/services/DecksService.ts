@@ -1,12 +1,14 @@
 import fetchService, { IFetchService } from "./FetchService";
 import environmentService from "./EnvironmentService";
+import { IDeck, ICard } from "../Models";
 
 interface IGetDecksResponse {
-    decks: [];
+    decks: IDeck[];
 }
 
 export interface IDecksService {
-    getDecks(): Promise<[]>;
+    createDeck(cards: ICard[]): Promise<IDeck>;
+    getDecks(): Promise<IDeck[]>;
 }
 
 class KubeCardsDecksService implements IDecksService {
@@ -15,7 +17,22 @@ class KubeCardsDecksService implements IDecksService {
         private readonly fetchService: IFetchService) {
     }
 
-    async getDecks(): Promise<[]> {
+    async createDeck(cards: ICard[]): Promise<IDeck> {
+        const request: RequestInit = {
+            body: JSON.stringify({ cards }),
+            method: 'POST',
+        };
+
+        const response = await this.fetchService.fetch(
+            `${this.baseUri}/api/decks`,
+            request);
+
+        const responseJson: IDeck = await response.json();
+
+        return responseJson;
+    }
+
+    async getDecks(): Promise<IDeck[]> {
         const request: RequestInit = {
             method: 'GET'
         };
