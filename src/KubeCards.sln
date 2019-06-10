@@ -11,6 +11,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CardsDatabase", "CardsDatab
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DecksService", "DecksService\DecksService.csproj", "{A3CAEC73-EE37-4639-8395-CECD23D07741}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameService", "GameService\GameService.csproj", "{9B847E85-68C4-4A22-AB68-D4BA3FF3A844}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeCards.Common", "KubeCards.Common\KubeCards.Common.csproj", "{185EDE2C-95BA-4A78-B608-346FD3747C63}"
 EndProject
 Global
@@ -37,6 +38,10 @@ Global
 		{A3CAEC73-EE37-4639-8395-CECD23D07741}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3CAEC73-EE37-4639-8395-CECD23D07741}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3CAEC73-EE37-4639-8395-CECD23D07741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B847E85-68C4-4A22-AB68-D4BA3FF3A844}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B847E85-68C4-4A22-AB68-D4BA3FF3A844}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B847E85-68C4-4A22-AB68-D4BA3FF3A844}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B847E85-68C4-4A22-AB68-D4BA3FF3A844}.Release|Any CPU.Build.0 = Release|Any CPU
 		{185EDE2C-95BA-4A78-B608-346FD3747C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{185EDE2C-95BA-4A78-B608-346FD3747C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{185EDE2C-95BA-4A78-B608-346FD3747C63}.Release|Any CPU.ActiveCfg = Release|Any CPU

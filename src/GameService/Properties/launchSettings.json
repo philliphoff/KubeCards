@@ -4,24 +4,24 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "http://localhost:6224",
-      "sslPort": 44367
+      "applicationUrl": "http://localhost:20603",
+      "sslPort": 44370
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": false,
-      "launchUrl": "api/decks",
+      "launchUrl": "api/games",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "DecksService": {
+    "GameService": {
       "commandName": "Project",
       "launchBrowser": false,
-      "launchUrl": "api/decks",
-      "applicationUrl": "https://localhost:5011;http://localhost:5010",
+      "launchUrl": "api/games",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

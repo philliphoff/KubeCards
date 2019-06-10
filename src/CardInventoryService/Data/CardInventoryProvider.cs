@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using KubeCards.Common;
 using KubeCards.Models;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -63,7 +64,7 @@ namespace CardInventoryService.Data
                     .Select(value =>
                         new Card
                         {
-                            CardId = Guid.NewGuid().ToString("N").ToLowerInvariant(),
+                            CardId = ObjectId.GetNewId(),
                             CardValue = value,
                             CreatedDateTimeUtc = createdDate
                         });

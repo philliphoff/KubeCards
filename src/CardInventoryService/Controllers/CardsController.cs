@@ -1,10 +1,10 @@
-﻿using System;
-using CardInventoryService.Data;
+﻿using CardInventoryService.Data;
 using KubeCards.Common;
 using KubeCards.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace CardInventoryService.Controllers
 {

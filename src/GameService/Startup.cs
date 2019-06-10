@@ -1,4 +1,4 @@
-﻿using DecksService.Data;
+﻿using GameService.Data;
 using KubeCards.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DecksService
+namespace GameService
 {
     public class Startup
     {
@@ -22,7 +22,7 @@ namespace DecksService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDeckInventoryProvider>(new DeckInventoryProvider(Configuration));
+            services.AddSingleton<IGameStateProvider>(new GameStateProvider(Configuration));
 
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options =>
