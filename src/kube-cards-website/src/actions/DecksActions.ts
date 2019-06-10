@@ -21,11 +21,11 @@ export const decksCreateStarter = () => {
         dispatch(decksSetState(DecksState.Loading));
 
         try {
-            const decks: IDeck[] = await decksService.getDecks();
+            const deck = await decksService.createStarterDeck();
             
-            dispatch(decksSet(decks));
+            dispatch(decksSet([ deck ]));
 
-            decksSetState(DecksState.Loaded);
+            dispatch(decksSetState(DecksState.Loaded));
         }
         catch (Error) {
             dispatch(decksSetState(DecksState.Failed));
@@ -42,7 +42,7 @@ export const decksLoad = () => {
             
             dispatch(decksSet(decks));
 
-            decksSetState(DecksState.Loaded);
+            dispatch(decksSetState(DecksState.Loaded));
         }
         catch (Error) {
             dispatch(decksSetState(DecksState.Failed));
