@@ -1,0 +1,48 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/GameService/*
+    - src/KubeCards.Common/*
+    - src/KubeCards.Models/*
+
+pr:
+  branches:
+    include:
+    - "*"
+  paths:
+    include:
+    - src/GameService/*
+    - src/KubeCards.Common/*
+    - src/KubeCards.Models/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  displayName: Login to ACR
+  inputs:
+    command: login
+    containerRegistry: container-tools-kubecardsregistry
+- task: Docker@2
+  displayName: Build
+  inputs:
+    command: build
+    dockerFile: src/GameService/Dockerfile
+    buildContext: src
+    repository: kube-cards-game-service
+- task: Docker@2
+  displayName: Push
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    command: push
+    containerRegistry: container-tools-kubecardsregistry
+    repository: kube-cards-game-service
