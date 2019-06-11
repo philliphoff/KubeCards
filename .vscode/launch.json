@@ -8,7 +8,7 @@
             "name": "Launch CardInventoryService",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-inventory-service",
             "program": "${workspaceFolder}/src/CardInventoryService/bin/Debug/netcoreapp2.2/CardInventoryService.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/CardInventoryService",
@@ -57,6 +57,31 @@
             }
         },
         {
+            "name": "Launch GameService",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-game-service",
+            "program": "${workspaceFolder}/src/GameService/bin/Debug/netcoreapp2.2/GameService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/GameService",
+            "stopAtEntry": false,
+            "launchBrowser": {
+                "enabled": false
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "AAD_B2C_Instance": "${config:kube-cards.AAD_B2C_Instance}",
+                "AAD_B2C_ClientId": "${config:kube-cards.AAD_B2C_ClientId}",
+                "AAD_B2C_Domain": "${config:kube-cards.AAD_B2C_Domain}",
+                "AAD_B2C_SignUpSignInPolicyId": "${config:kube-cards.AAD_B2C_SignUpSignInPolicyId}",
+                "RedisConnectionString": "${config:kube-cards.game.RedisConnectionString}",
+                "DecksServiceEndpoint": "${config:kube-cards.game.DecksServiceEndpoint}"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Website in Chrome",
@@ -70,7 +95,7 @@
     "compounds": [
         {
             "name": "Launch Cluster",
-            "configurations": [ "Launch CardInventoryService", "Launch DecksService" ]
+            "configurations": [ "Launch CardInventoryService", "Launch DecksService", "Launch GameService" ]
         }
     ]
 }

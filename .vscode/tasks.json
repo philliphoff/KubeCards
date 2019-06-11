@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-inventory-service",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -20,6 +20,16 @@
             "args": [
                 "build",
                 "${workspaceFolder}/src/DecksService/DecksService.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-game-service",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/GameService/GameService.csproj"
             ],
             "problemMatcher": "$msCompile"
         },

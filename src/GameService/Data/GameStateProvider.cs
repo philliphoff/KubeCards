@@ -119,7 +119,7 @@ namespace GameService.Data
             using (var httpClient = HttpClientProvider.GetHttpClient(authToken))
             {
                 string decksServiceEndpoint = this.configuration["DecksServiceEndpoint"];
-                string decksServiceUrl = FormattableString.Invariant($"https://{decksServiceEndpoint}/api/decks/{deckId}");
+                string decksServiceUrl = FormattableString.Invariant($"{decksServiceEndpoint}/api/decks/{deckId}");
                 HttpResponseMessage response = await httpClient.GetAsync(decksServiceUrl);
                 if (!response.IsSuccessStatusCode)
                 {
