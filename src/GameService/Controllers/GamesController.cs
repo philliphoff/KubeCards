@@ -26,7 +26,6 @@ namespace GameService.Controllers
 
         // GET api/games
         [ProducesResponseType(typeof(GameState), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
         public async Task<ActionResult<GameState[]>> GetAsync()
         {
@@ -36,7 +35,7 @@ namespace GameService.Controllers
 
             if (gameState == null)
             {
-                return new BadRequestResult();
+                return Array.Empty<GameState>();
             }
 
             return new GameState[] { gameState };
@@ -44,7 +43,7 @@ namespace GameService.Controllers
 
         // GET api/games/[gameId]
         [ProducesResponseType(typeof(GameState), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{gameId}")]
         public async Task<ActionResult<GameState>> GetAsync(string gameId)
         {
@@ -54,7 +53,7 @@ namespace GameService.Controllers
 
             if (gameState == null)
             {
-                return new BadRequestResult();
+                return new NotFoundObjectResult(gameId);
             }
 
             return gameState;
