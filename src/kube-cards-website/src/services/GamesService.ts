@@ -52,6 +52,9 @@ class KubeCardsGamesService implements IGamesService {
     private async post<T>(relativeUri?: string, body?: any): Promise<T> {
         const request: RequestInit = {
             body: body !== undefined ? JSON.stringify(body) : undefined,
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'POST'
         };
 

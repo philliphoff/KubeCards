@@ -8,6 +8,7 @@ export enum KubeCardsPlayState {
     ChooseOpponent,
     ChooseDeck,
     ConfirmPlay,
+    Creating,
     Playing
 }
 

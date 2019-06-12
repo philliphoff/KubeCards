@@ -11,10 +11,32 @@ const gamesSetExisting = (existing: IGameState[]) => ({
     existing
 });
 
+export const gamesCreate = (deckId: string) => {
+    return async (dispatch: any) => {
+        await dispatch(gamesSetIsRefreshing(true));
+
+        try {
+            const newGame = await gamesService.createGame(deckId);
+            
+            await dispatch(gamesSetExisting([ newGame ]));
+        }
+        finally {
+            await dispatch(gamesSetIsRefreshing(false));
+        }
+    }
+}
+
 export const gamesGet = () => {
     return async (dispatch: any) => {
-        const existingGames = await gamesService.getGames();
+        await dispatch(gamesSetIsRefreshing(true));
+        
+        try {
+            const existingGames = await gamesService.getGames();
 
-        dispatch(gamesSetExisting(existingGames));
+            await dispatch(gamesSetExisting(existingGames));
+        }
+        finally {
+            await dispatch(gamesSetIsRefreshing(false));
+        }
     };
 }

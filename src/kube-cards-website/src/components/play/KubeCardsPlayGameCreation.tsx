@@ -4,7 +4,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
-import { playMoveNext } from '../../actions/PlayActions';
+import { playMoveNext, playCreateGame } from '../../actions/PlayActions';
 import { IPlayStore, KubeCardsPlayOpponentType, KubeCardsPlayState } from '../../reducers/PlayReducer';
 import KubeCardsPlayOpponentChoice from './KubeCardsPlayOpponentChoice';
 import { IKubeCardsStore } from '../../KubeCardsStore';
@@ -45,7 +45,7 @@ const steps: PlayStep[] = [
         label: 'Confirm play',
         state: KubeCardsPlayState.ConfirmPlay,
         render: () => <KubeCardsPlayConfirmation />,
-        finalState: KubeCardsPlayState.Playing
+        finalState: KubeCardsPlayState.Creating
     }
 ];
 
@@ -140,18 +140,32 @@ function getCurrentStep(state: KubeCardsPlayState): number {
 
 function mapStateToProps(state: IKubeCardsStore) {
     return {
-        canMoveNext: canMoveNext(state.play),
-        currentStep: getCurrentStep(state.play.state),
-        steps
+        state
     };
 }
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        onMoveToState: (state: KubeCardsPlayState) => {
-            dispatch(playMoveNext(state));
+        dispatch
+    };
+}
+
+function mergeProps(stateProps: { state: IKubeCardsStore }, dispatchProps: { dispatch: any }) {
+    const { state } = stateProps;
+    const { dispatch } = dispatchProps;
+
+    return {
+        canMoveNext: canMoveNext(state.play),
+        currentStep: getCurrentStep(state.play.state),
+        steps,
+        onMoveToState: (nextState: KubeCardsPlayState) => {
+            dispatch(playMoveNext(nextState));
+
+            if (nextState === KubeCardsPlayState.Creating && state.play.deckId) {
+                dispatch(playCreateGame(state.play.deckId));
+            }
         }
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(KubeCardsPlayGameCreation));
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(withStyles(styles)(KubeCardsPlayGameCreation));

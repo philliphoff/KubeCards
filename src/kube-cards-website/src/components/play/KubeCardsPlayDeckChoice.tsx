@@ -19,6 +19,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import WarningIcon from '@material-ui/icons/Warning';
+import KubeCardsPlayLoading from './KubeCardsPlayLoading';
 
 const styles: StyleRulesCallback = (theme: any) => ({
     card: {
@@ -84,18 +85,7 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
     }
 
     private renderLoading() {
-        return (
-            <Container>
-                <Grid alignItems='center' container direction='column' spacing={2}>
-                    <Grid item>
-                        <CircularProgress />
-                    </Grid>
-                    <Grid item>
-                        <Typography>Loading your decks...</Typography>
-                    </Grid>
-                </Grid>
-            </Container>
-        );
+        return <KubeCardsPlayLoading label='Loading your decks...' />;
     }
 
     private renderLoaded() {

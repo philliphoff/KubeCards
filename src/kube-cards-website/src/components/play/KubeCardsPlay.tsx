@@ -4,9 +4,10 @@ import { KubeCardsPlayState } from '../../reducers/PlayReducer';
 import { IKubeCardsStore } from '../../KubeCardsStore';
 import KubeCardsPlayGameCreation from './KubeCardsPlayGameCreation';
 import KubeCardsPlayGame from './KubeCardsPlayGame';
+import KubeCardsPlayLoading from './KubeCardsPlayLoading';
 
 interface KubeCardsPlayProps {
-    isPlaying: boolean
+    state: KubeCardsPlayState
 }
 
 class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
@@ -15,18 +16,19 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
     }
 
     render() {
-        const { isPlaying } = this.props;
-        return (
-            <div>
-                { isPlaying ? <KubeCardsPlayGame /> : <KubeCardsPlayGameCreation /> }
-            </div>
-        );
+        const { state } = this.props;
+
+        switch (state) {
+            case KubeCardsPlayState.Playing: return <KubeCardsPlayGame />;
+            case KubeCardsPlayState.Creating: return <KubeCardsPlayLoading label='Starting game...' />;
+            default: return <KubeCardsPlayGameCreation />;
+        }
     }
 }
 
 function mapStateToProps(state: IKubeCardsStore) {
     return {
-        isPlaying: state.play.state === KubeCardsPlayState.Playing
+        state: state.play.state
     };
 }
 
