@@ -8,8 +8,13 @@ import Typography from '@material-ui/core/Typography';
 import { IKubeCardsStore } from '../../KubeCardsStore';
 import { connect } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
+import { IPlayStore } from '../../reducers/PlayReducer';
+import { IPlayer } from '../../Models';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowFowardIcon from '@material-ui/icons/ArrowForward';
 
 interface Player {
+    isNext: boolean;
     label: string;
     score: number;
 }
@@ -23,7 +28,7 @@ const KubeCardsPlayGame = (props: KubeCardPlayGameProps) => {
     const { player1, player2 } = props;
 
     return (
-        <Grid container direction='row' spacing={2}>
+        <Grid alignItems='center' container direction='row' spacing={2}>
             <Grid item>
                 <Card>
                     <CardContent>
@@ -46,6 +51,13 @@ const KubeCardsPlayGame = (props: KubeCardPlayGameProps) => {
                         </Grid>
                     </CardContent>
                 </Card>
+            </Grid>
+            <Grid item>
+                {
+                    player1.isNext
+                        ? <ArrowBackIcon color='primary' fontSize='large' />
+                        : <ArrowFowardIcon color='primary' fontSize='large' />
+                }
             </Grid>
             <Grid item>
                 <Card>
@@ -74,6 +86,14 @@ const KubeCardsPlayGame = (props: KubeCardPlayGameProps) => {
     );
 };
 
+function createPlayer(player: IPlayer, nextPlayerUserId: string): Player {
+    return {
+        isNext: player.userId === nextPlayerUserId,
+        label: player.displayName,
+        score: (player.playedCards || []).reduce((total, card) => total + card.cardValue, 0)
+    };
+}
+
 function mapStateToProps(state: IKubeCardsStore) {
     const gameId = state.play.gameId;
 
@@ -84,8 +104,8 @@ function mapStateToProps(state: IKubeCardsStore) {
     const game = state.games.existing[gameId];
 
     return {
-        player1: { label: game.player1.displayName, score: 1 },
-        player2: { label: game.player2.displayName, score: 2 }
+        player1: createPlayer(game.player1, game.nextPlayerUserId),
+        player2: createPlayer(game.player2, game.nextPlayerUserId)
     };
 }
 

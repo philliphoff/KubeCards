@@ -11,8 +11,8 @@ export interface IDeck {
 export interface IPlayer {
     displayName: string;
     userId: string;
-    handCards: ICard[];
-    playedCards: ICard[];
+    handCards: ICard[] | null;
+    playedCards: ICard[] | null;
 }
 
 export interface IGameAction {
