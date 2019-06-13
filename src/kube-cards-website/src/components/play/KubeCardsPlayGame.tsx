@@ -20,6 +20,7 @@ import Container from '@material-ui/core/Container';
 import { StyleRulesCallback } from '@material-ui/core/styles';
 import { WithStyles, withStyles } from '@material-ui/styles';
 import { KubeCardsPlayState } from '../../reducers/PlayReducer';
+import DoneIcon from '@material-ui/icons/Done';
 
 const styles: StyleRulesCallback = (theme: any) => ({
     button: {
@@ -88,6 +89,18 @@ class KubeCardsCard extends React.Component<CardProps> {
 
 const KubeCardsCardWithStyles = withStyles(styles)(KubeCardsCard);
 
+const KubeCardsTurnIndicator = (props: { isEnded: boolean, isPlayer1Next: boolean}) => (
+    <Container>
+        {
+            !props.isEnded
+                ? props.isPlayer1Next
+                    ? <ArrowBackIcon color='primary' fontSize='large' />
+                    : <ArrowFowardIcon color='primary' fontSize='large' />
+                : <DoneIcon />
+        }
+    </Container>
+);
+
 class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     constructor(props: KubeCardPlayGameProps) {
         super(props);
@@ -111,7 +124,7 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 
     private renderScore() {
-        const { player1, player2 } = this.props;
+        const { isEnded, player1, player2 } = this.props;
 
         return (
             <Grid alignItems='center' container direction='row' spacing={2}>
@@ -139,11 +152,7 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
                     </Card>
                 </Grid>
                 <Grid item>
-                    {
-                        player1.isNext
-                            ? <ArrowBackIcon color='primary' fontSize='large' />
-                            : <ArrowFowardIcon color='primary' fontSize='large' />
-                    }
+                    <KubeCardsTurnIndicator isEnded={isEnded} isPlayer1Next={player1.isNext} />
                 </Grid>
                 <Grid item>
                     <Card>
