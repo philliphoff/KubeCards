@@ -6,37 +6,35 @@ const gamesSetIsRefreshing = (isRefreshing: boolean) => ({
     isRefreshing
 });
 
-const gamesSetExisting = (existing: IGameState[]) => ({
+const gamesSetExisting = (existing: { [key: string]: IGameState }) => ({
     type: 'KUBE_CARDS_GAMES_SET_EXISTING',
     existing
 });
 
-export const gamesCreate = (deckId: string) => {
-    return async (dispatch: any) => {
-        await dispatch(gamesSetIsRefreshing(true));
-
-        try {
-            const newGame = await gamesService.createGame(deckId);
-            
-            await dispatch(gamesSetExisting([ newGame ]));
-        }
-        finally {
-            await dispatch(gamesSetIsRefreshing(false));
-        }
-    }
-}
+export const gamesAddExisting = (existing: IGameState) => ({
+    type: 'KUBE_CARDS_GAMES_ADD_EXISTING',
+    existing
+});
 
 export const gamesGet = () => {
     return async (dispatch: any) => {
-        await dispatch(gamesSetIsRefreshing(true));
+        dispatch(gamesSetIsRefreshing(true));
         
         try {
             const existingGames = await gamesService.getGames();
 
-            await dispatch(gamesSetExisting(existingGames));
+            const existingGamesMap = existingGames.reduce<{ [key: string]: IGameState }>(
+                (games, game) => {
+                    games[game.gameId] = game;
+
+                    return games
+                },
+                {});
+
+            dispatch(gamesSetExisting(existingGamesMap));
         }
         finally {
-            await dispatch(gamesSetIsRefreshing(false));
+            dispatch(gamesSetIsRefreshing(false));
         }
     };
 }

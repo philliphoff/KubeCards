@@ -140,32 +140,22 @@ function getCurrentStep(state: KubeCardsPlayState): number {
 
 function mapStateToProps(state: IKubeCardsStore) {
     return {
-        state
+        canMoveNext: canMoveNext(state.play),
+        currentStep: getCurrentStep(state.play.state),
+        steps,
     };
 }
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        dispatch
-    };
-}
-
-function mergeProps(stateProps: { state: IKubeCardsStore }, dispatchProps: { dispatch: any }) {
-    const { state } = stateProps;
-    const { dispatch } = dispatchProps;
-
-    return {
-        canMoveNext: canMoveNext(state.play),
-        currentStep: getCurrentStep(state.play.state),
-        steps,
         onMoveToState: (nextState: KubeCardsPlayState) => {
             dispatch(playMoveNext(nextState));
 
-            if (nextState === KubeCardsPlayState.Creating && state.play.deckId) {
-                dispatch(playCreateGame(state.play.deckId));
+            if (nextState === KubeCardsPlayState.Creating) {
+                dispatch(playCreateGame());
             }
         }
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(withStyles(styles)(KubeCardsPlayGameCreation));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(KubeCardsPlayGameCreation));

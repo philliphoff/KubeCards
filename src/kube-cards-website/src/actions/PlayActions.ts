@@ -1,5 +1,12 @@
 import { KubeCardsPlayOpponentType, KubeCardsPlayState } from "../reducers/PlayReducer";
-import { gamesCreate } from "./GamesActions";
+import { gamesAddExisting } from "./GamesActions";
+import { IKubeCardsStore } from "../KubeCardsStore";
+import gamesService from "../services/GamesService";
+
+const playSetGameId = (gameId: string) => ({
+    type: 'KUBE_CARDS_PLAY_SET_GAME_ID',
+    gameId
+});
 
 export const playChooseOpponent = (opponentType: KubeCardsPlayOpponentType, opponentId?: string) => ({
     type: 'KUBE_CARDS_PLAY_CHOOSE_OPPONENT',
@@ -17,10 +24,22 @@ export const playMoveNext = (state: KubeCardsPlayState) => ({
     state
 });
 
-export const playCreateGame = (deckId: string) => {
-    return async (dispatch: any) => {
+export const playCreateGame = () => {
+    return async (dispatch: any, getState: () => IKubeCardsStore) => {
         try {
-            await dispatch(gamesCreate(deckId));
+            const state = getState();
+
+            const { deckId } = state.play;
+
+            if (!deckId) {
+                throw new Error('Cannot create a game without a selected deck.');
+            }
+
+            const newGame = await gamesService.createGame(deckId);
+
+            await dispatch(gamesAddExisting(newGame));
+            
+            await dispatch(playSetGameId(newGame.gameId));
 
             await dispatch(playMoveNext(KubeCardsPlayState.Playing));
         }

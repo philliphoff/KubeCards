@@ -14,6 +14,7 @@ export enum KubeCardsPlayState {
 
 export interface IPlayStore {
     deckId?: string;
+    gameId?: string;
     opponentId?: string;
     opponentType?: KubeCardsPlayOpponentType;
     state: KubeCardsPlayState;
@@ -31,6 +32,8 @@ const playReducer = (state: IPlayStore = defaultState, action: any) => {
             return { ...state, opponentType: action.opponentType};
         case 'KUBE_CARDS_PLAY_MOVE_NEXT':
             return { ...state, state: action.state };
+        case 'KUBE_CARDS_PLAY_SET_GAME_ID':
+            return { ...state, gameId: action.gameId };
     }
 
     return state;
