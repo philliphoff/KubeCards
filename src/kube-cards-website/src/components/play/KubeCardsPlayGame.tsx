@@ -16,15 +16,26 @@ import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import { playSetCardId, playCard } from '../../actions/PlayActions';
 import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import { StyleRulesCallback } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/styles';
 
-interface CardProps {
+const styles: StyleRulesCallback = (theme: any) => ({
+    button: {
+        marginLeft: 'auto'
+    }
+});
+
+interface CardProps extends WithStyles<typeof styles>{
     cardId: string;
     cardValue: number;
+    isChosen: boolean;
     isPlayed: boolean;
+    onChooseCard: (cardId: string) => void;
 }
 
 interface PlayerProps {
-    cards: CardProps[];
+    cards: Omit<CardProps, 'classes' | 'onChooseCard'>[];
     isNext: boolean;
     label: string;
     score: number;
@@ -38,6 +49,43 @@ interface KubeCardPlayGameProps {
     player2: PlayerProps;
 }
 
+class KubeCardsCard extends React.Component<CardProps> {
+    constructor(props: CardProps) {
+        super(props);
+
+        this.onCardClick = this.onCardClick.bind(this);
+    }
+
+    render() {
+        const { cardId, cardValue, classes, isChosen, isPlayed } = this.props;
+
+        return (
+            <Card>
+                <CardContent>
+                    <Container>
+                        <Typography color='primary' variant='h4'>{cardValue}</Typography>
+                    </Container>
+                </CardContent>
+                <CardActions>
+                    <IconButton className={classes.button} disabled={isPlayed} id={cardId} onClick={this.onCardClick}>
+                        {isChosen ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+                    </IconButton>
+                </CardActions>
+            </Card>
+            );
+    }
+
+    private onCardClick(event: React.MouseEvent) {
+        const { onChooseCard } = this.props;
+
+        if (onChooseCard) {
+            onChooseCard(event.currentTarget.id);
+        }
+    }
+}
+
+const KubeCardsCardWithStyles = withStyles(styles)(KubeCardsCard);
+
 class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     constructor(props: KubeCardPlayGameProps) {
         super(props);
@@ -47,7 +95,7 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
 
     render() {
         return (
-            <Grid container direction='column' spacing={2}>
+            <Grid alignItems='center' container direction='column' spacing={2}>
                 <Grid item>
                     { this.renderScore() }
                 </Grid>
@@ -66,9 +114,9 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
                 <Grid item>
                     <Card>
                         <CardContent>
-                            <Grid alignItems='center' container direction='row'>
+                            <Grid alignItems='center' container direction='row' spacing={8}>
                                 <Grid item>
-                                    <Grid alignItems='flex-start' container direction='column'>
+                                    <Grid alignItems='flex-start' container direction='column' spacing={1}>
                                         <Grid item>
                                             <Avatar>
                                                 <PermIdentityIcon />
@@ -96,12 +144,12 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
                 <Grid item>
                     <Card>
                         <CardContent>
-                            <Grid alignItems='center' container>
+                            <Grid alignItems='center' container spacing={8}>
                                 <Grid item>
                                     <Typography variant='h3'>{player2.score}</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <Grid alignItems='flex-end' container direction='column'>
+                                    <Grid alignItems='flex-end' container direction='column' spacing={1}>
                                         <Grid item>
                                             <Avatar>
                                                 <PermIdentityIcon />
@@ -121,7 +169,7 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 
     private renderHand() {
-        const { chosenCardId, onPlayCard, player1 } = this.props;
+        const { chosenCardId, onChooseCard, onPlayCard, player1 } = this.props;
         const { cards } = player1;
 
         return (
@@ -131,16 +179,7 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
                         {
                             cards.map(card => (
                                 <Grid item key={card.cardId}>
-                                    <Card>
-                                        <CardContent>
-                                            <Typography>{card.cardValue}</Typography>
-                                        </CardContent>
-                                        <CardActions>
-                                            <IconButton disabled={card.isPlayed} id={card.cardId} onClick={this.onCardClick}>
-                                                {card.cardId === chosenCardId ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-                                            </IconButton>
-                                        </CardActions>
-                                    </Card>
+                                    <KubeCardsCardWithStyles {...card} onChooseCard={onChooseCard} />
                                 </Grid>
                             ))
                         }
@@ -162,9 +201,9 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 };
 
-function createPlayer(player: IPlayer, nextPlayerUserId: string): PlayerProps {
-    const unplayedCards = (player.handCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isPlayed: false }));
-    const playedCards = (player.playedCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isPlayed: true }));
+function createPlayer(player: IPlayer, nextPlayerUserId: string, chosenCardId: string | undefined): PlayerProps {
+    const unplayedCards = (player.handCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isChosen: card.cardId === chosenCardId, isPlayed: false }));
+    const playedCards = (player.playedCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isChosen: card.cardId === chosenCardId, isPlayed: true }));
     const cards = unplayedCards.concat(playedCards);
     
     cards.sort((card1, card2) => card1.cardValue - card2.cardValue);
@@ -178,7 +217,7 @@ function createPlayer(player: IPlayer, nextPlayerUserId: string): PlayerProps {
 }
 
 function mapStateToProps(state: IKubeCardsStore) {
-    const gameId = state.play.gameId;
+    const { cardId, gameId } = state.play;
 
     if (!gameId) {
         throw new Error('Cannot play a game without a valid game ID.');
@@ -188,8 +227,8 @@ function mapStateToProps(state: IKubeCardsStore) {
 
     return {
         chosenCardId: state.play.cardId,
-        player1: createPlayer(game.player1, game.nextPlayerUserId),
-        player2: createPlayer(game.player2, game.nextPlayerUserId)
+        player1: createPlayer(game.player1, game.nextPlayerUserId, cardId),
+        player2: createPlayer(game.player2, game.nextPlayerUserId, cardId)
     };
 }
 

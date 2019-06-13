@@ -24,7 +24,7 @@
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
-    "typescript": "3.4.5"
+    "typescript": "3.5.2"
   },
   "scripts": {
     "start": "./scripts/env.sh && cp env-config.js ./public/ && react-scripts start",
