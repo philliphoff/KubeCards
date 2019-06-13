@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { StyleRulesCallback } from '@material-ui/core/styles';
 import { WithStyles, withStyles } from '@material-ui/styles';
+import { KubeCardsPlayState } from '../../reducers/PlayReducer';
 
 const styles: StyleRulesCallback = (theme: any) => ({
     button: {
@@ -43,6 +44,7 @@ interface PlayerProps {
 
 interface KubeCardPlayGameProps {
     chosenCardId: string | undefined;
+    isEnded: boolean,
     onChooseCard: (cardId: string) => void;
     onPlayCard: () => void;
     player1: PlayerProps;
@@ -94,13 +96,15 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 
     render() {
+        const { isEnded } = this.props;
+
         return (
             <Grid alignItems='center' container direction='column' spacing={2}>
                 <Grid item>
                     { this.renderScore() }
                 </Grid>
                 <Grid item>
-                    { this.renderHand() }
+                    { isEnded ? this.renderEnded() : this.renderHand() }
                 </Grid>
             </Grid>
         );
@@ -168,6 +172,14 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
         );
     }
 
+    private renderEnded() {
+        return (
+            <Container>
+                <Typography variant='h4'>This game is done!</Typography>
+            </Container>
+        );
+    }
+
     private renderHand() {
         const { chosenCardId, onChooseCard, onPlayCard, player1 } = this.props;
         const { cards } = player1;
@@ -227,6 +239,7 @@ function mapStateToProps(state: IKubeCardsStore) {
 
     return {
         chosenCardId: state.play.cardId,
+        isEnded: state.play.state === KubeCardsPlayState.Ended,
         player1: createPlayer(game.player1, game.nextPlayerUserId, cardId),
         player2: createPlayer(game.player2, game.nextPlayerUserId, cardId)
     };

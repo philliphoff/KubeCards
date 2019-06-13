@@ -29,10 +29,18 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
         const { state } = this.props;
 
         switch (state) {
-            case KubeCardsPlayState.Resuming: return <KubeCardsPlayLoading label='Resuming the current game (if any)...' />;
-            case KubeCardsPlayState.Playing: return <KubeCardsPlayGame />;
-            case KubeCardsPlayState.Creating: return <KubeCardsPlayLoading label='Starting game...' />;
-            default: return <KubeCardsPlayGameCreation />;
+            case KubeCardsPlayState.Resuming:
+                return <KubeCardsPlayLoading label='Resuming the current game (if any)...' />;
+
+            case KubeCardsPlayState.Creating:
+                return <KubeCardsPlayLoading label='Starting game...' />;
+                    
+            case KubeCardsPlayState.Playing:
+            case KubeCardsPlayState.Ended:
+                return <KubeCardsPlayGame />;
+
+            default:
+                return <KubeCardsPlayGameCreation />;
         }
     }
 }

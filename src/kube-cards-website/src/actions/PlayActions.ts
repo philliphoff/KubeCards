@@ -2,6 +2,7 @@ import { KubeCardsPlayOpponentType, KubeCardsPlayState } from "../reducers/PlayR
 import { gamesAddExisting, gamesGet } from "./GamesActions";
 import { IKubeCardsStore } from "../KubeCardsStore";
 import gamesService from "../services/GamesService";
+import { IGameState, IPlayer } from "../Models";
 
 const playSetGameId = (gameId: string) => ({
     type: 'KUBE_CARDS_PLAY_SET_GAME_ID',
@@ -29,6 +30,14 @@ export const playMoveNext = (state: KubeCardsPlayState) => ({
     state
 });
 
+function isPlayerOutOfCards(player: IPlayer): boolean {
+    return !player.handCards || player.handCards.length === 0;
+}
+
+function isGameEnded(game: IGameState) {
+    return isPlayerOutOfCards(game.player1) && isPlayerOutOfCards(game.player2);
+}
+
 export const playCard = () => {
     return async (dispatch: any, getState: () => IKubeCardsStore) => {
         const state = getState();
@@ -48,6 +57,10 @@ export const playCard = () => {
         await dispatch(gamesAddExisting(updatedGame));
 
         await dispatch(playSetCardId(undefined));
+
+        if (isGameEnded(updatedGame)) {
+            await dispatch(playMoveNext(KubeCardsPlayState.Ended));
+        }
     };
 };
 
@@ -85,11 +98,16 @@ export const playResumeGame = () => {
         const state = getState();
 
         const existingGameId = Object.keys(state.games.existing)[0];
+        const existingGame = state.games.existing[existingGameId];
 
-        if (existingGameId) {
-            await dispatch(playSetGameId(existingGameId));
+        if (existingGame) {
+            await dispatch(playSetGameId(existingGame.gameId));
 
-            await dispatch(playMoveNext(KubeCardsPlayState.Playing));
+            if (isGameEnded(existingGame)) {
+                await dispatch(playMoveNext(KubeCardsPlayState.Ended));
+            } else {
+                await dispatch(playMoveNext(KubeCardsPlayState.Playing));
+            }
         } else {
             await dispatch(playMoveNext(KubeCardsPlayState.ChooseDeck));
         }

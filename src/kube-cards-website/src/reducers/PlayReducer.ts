@@ -9,7 +9,8 @@ export enum KubeCardsPlayState {
     ChooseDeck,
     ConfirmPlay,
     Creating,
-    Playing
+    Playing,
+    Ended
 }
 
 export interface IPlayStore {
