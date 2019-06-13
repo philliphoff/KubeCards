@@ -8,6 +8,7 @@ import KubeCardsPlayLoading from './KubeCardsPlayLoading';
 import { playResumeGame } from '../../actions/PlayActions';
 
 interface KubeCardsPlayProps {
+    isLoggedIn: boolean;
     onResumeGame: () => void;
     state: KubeCardsPlayState;
 }
@@ -18,15 +19,19 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
     }
 
     componentDidMount() {
-        const { onResumeGame, state } = this.props;
+        this.resumeIfNecessary();
+    }
 
-        if (state === KubeCardsPlayState.Resuming && onResumeGame) {
-            onResumeGame();
-        }
+    componentDidUpdate() {
+        this.resumeIfNecessary();
     }
 
     render() {
-        const { state } = this.props;
+        const { isLoggedIn, state } = this.props;
+
+        if (!isLoggedIn) {
+            return <KubeCardsPlayLoading label='Waiting for you to login...' />;
+        }
 
         switch (state) {
             case KubeCardsPlayState.Resuming:
@@ -43,10 +48,19 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
                 return <KubeCardsPlayGameCreation />;
         }
     }
+
+    private resumeIfNecessary() {
+        const { onResumeGame, state } = this.props;
+
+        if (state === KubeCardsPlayState.Resuming && onResumeGame) {
+            onResumeGame();
+        }
+    }
 }
 
 function mapStateToProps(state: IKubeCardsStore) {
     return {
+        isLoggedIn: state.userAuth.state === 'loggedIn',
         state: state.play.state
     };
 }
