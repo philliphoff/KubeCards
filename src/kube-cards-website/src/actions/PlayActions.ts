@@ -8,6 +8,11 @@ const playSetGameId = (gameId: string) => ({
     gameId
 });
 
+export const playSetCardId = (cardId: string | undefined) => ({
+    type: 'KUBE_CARDS_PLAY_SET_CARD_ID',
+    cardId
+});
+
 export const playChooseOpponent = (opponentType: KubeCardsPlayOpponentType, opponentId?: string) => ({
     type: 'KUBE_CARDS_PLAY_CHOOSE_OPPONENT',
     opponentType,
@@ -23,6 +28,28 @@ export const playMoveNext = (state: KubeCardsPlayState) => ({
     type: 'KUBE_CARDS_PLAY_MOVE_NEXT',
     state
 });
+
+export const playCard = () => {
+    return async (dispatch: any, getState: () => IKubeCardsStore) => {
+        const state = getState();
+
+        const { cardId, gameId } = state.play;
+
+        if (!gameId) {
+            throw new Error('Cannot play a card if a game is not in progress.');
+        }
+
+        if (!cardId) {
+            throw new Error('Cannot play a card without selecting one first.');
+        }
+
+        const updatedGame = await gamesService.playCard(gameId, cardId);
+
+        await dispatch(gamesAddExisting(updatedGame));
+
+        await dispatch(playSetCardId(undefined));
+    };
+};
 
 export const playCreateGame = () => {
     return async (dispatch: any, getState: () => IKubeCardsStore) => {
