@@ -44,7 +44,8 @@ namespace GameService
                 {
                     builder
                         .WithOrigins("http://localhost:3000")
-                        .WithHeaders("Authorization");
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
 
                 app.UseDeveloperExceptionPage();

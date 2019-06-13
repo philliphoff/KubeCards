@@ -74,6 +74,24 @@ namespace GameService.Data
             return GameOperation.Success(gameState);
         }
 
+        public static GameOperation CompleteGame(string userId, GameState gameState)
+        {
+            bool foundPlayer = TryGetPlayer(userId, gameState, out Player player, out Player opponent);
+            if (!foundPlayer)
+            {
+                return GameOperation.Failure("You're not playing this game.");
+            }
+
+            if (!player.Completed)
+            {
+                player.Completed = true;
+    
+                gameState.LastUpdatedDateTimeUtc = DateTime.UtcNow;
+            }
+
+            return GameOperation.Success(gameState);
+        }
+
         private static bool PlayHandCard(string cardId, Player player, GameState gameState)
         {
             var hand = new List<Card>();

@@ -4,9 +4,13 @@ import { KubeCardsPlayState } from '../../reducers/PlayReducer';
 import { IKubeCardsStore } from '../../KubeCardsStore';
 import KubeCardsPlayGameCreation from './KubeCardsPlayGameCreation';
 import KubeCardsPlayGame from './KubeCardsPlayGame';
+import KubeCardsPlayLoading from './KubeCardsPlayLoading';
+import { playResumeGame } from '../../actions/PlayActions';
 
 interface KubeCardsPlayProps {
-    isPlaying: boolean
+    isLoggedIn: boolean;
+    onResumeGame: () => void;
+    state: KubeCardsPlayState;
 }
 
 class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
@@ -14,20 +18,59 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
         super(props);
     }
 
+    componentDidMount() {
+        this.resumeIfNecessary();
+    }
+
+    componentDidUpdate() {
+        this.resumeIfNecessary();
+    }
+
     render() {
-        const { isPlaying } = this.props;
-        return (
-            <div>
-                { isPlaying ? <KubeCardsPlayGame /> : <KubeCardsPlayGameCreation /> }
-            </div>
-        );
+        const { isLoggedIn, state } = this.props;
+
+        if (!isLoggedIn) {
+            return <KubeCardsPlayLoading label='Waiting for you to login...' />;
+        }
+
+        switch (state) {
+            case KubeCardsPlayState.Resuming:
+                return <KubeCardsPlayLoading label='Resuming the current game (if any)...' />;
+
+            case KubeCardsPlayState.Creating:
+                return <KubeCardsPlayLoading label='Starting game...' />;
+                    
+            case KubeCardsPlayState.Playing:
+            case KubeCardsPlayState.Ended:
+                return <KubeCardsPlayGame />;
+
+            default:
+                return <KubeCardsPlayGameCreation />;
+        }
+    }
+
+    private resumeIfNecessary() {
+        const { isLoggedIn, onResumeGame, state } = this.props;
+
+        if (isLoggedIn && state === KubeCardsPlayState.Resuming && onResumeGame) {
+            onResumeGame();
+        }
     }
 }
 
 function mapStateToProps(state: IKubeCardsStore) {
     return {
-        isPlaying: state.play.state === KubeCardsPlayState.Playing
+        isLoggedIn: state.userAuth.state === 'loggedIn',
+        state: state.play.state
     };
 }
 
-export default connect(mapStateToProps)(KubeCardsPlay);
+function mapDispatchToProps(dispatch: any) {
+    return {
+        onResumeGame: () => {
+            dispatch(playResumeGame());
+        }
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(KubeCardsPlay);
