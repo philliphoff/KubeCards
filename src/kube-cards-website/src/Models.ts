@@ -9,6 +9,7 @@ export interface IDeck {
 }
 
 export interface IPlayer {
+    completed: boolean;
     displayName: string;
     userId: string;
     handCards: ICard[] | null;

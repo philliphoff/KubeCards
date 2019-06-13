@@ -4,7 +4,7 @@ import { IKubeCardsStore } from "../KubeCardsStore";
 import gamesService from "../services/GamesService";
 import { IGameState, IPlayer } from "../Models";
 
-const playSetGameId = (gameId: string) => ({
+const playSetGameId = (gameId: string | undefined) => ({
     type: 'KUBE_CARDS_PLAY_SET_GAME_ID',
     gameId
 });
@@ -64,6 +64,25 @@ export const playCard = () => {
     };
 };
 
+export const playCompleteGame = () => {
+    return async (dispatch: any, getState: () => IKubeCardsStore) => {
+        const state = getState();
+
+        const { gameId } = state.play;
+
+        if (!gameId) {
+            throw new Error('Cannot complete a game if one is not in progress.');
+        }
+
+        const updatedGame = await gamesService.completeGame(gameId);
+
+        await dispatch(gamesAddExisting(updatedGame));
+
+        await dispatch(playMoveNext(KubeCardsPlayState.ChooseOpponent));
+        await dispatch(playSetGameId(undefined));
+    };
+};
+
 export const playCreateGame = () => {
     return async (dispatch: any, getState: () => IKubeCardsStore) => {
         try {
@@ -101,15 +120,25 @@ export const playResumeGame = () => {
         const existingGame = state.games.existing[existingGameId];
 
         if (existingGame) {
-            await dispatch(playSetGameId(existingGame.gameId));
-
+            // There's an existing game; see if it's ended...
             if (isGameEnded(existingGame)) {
-                await dispatch(playMoveNext(KubeCardsPlayState.Ended));
+                // The existing game is done; see if the user's completed it...
+                if (existingGame.player1.completed) {
+                    // The user's completed the game, so have the user start another one...
+                    await dispatch(playMoveNext(KubeCardsPlayState.ChooseOpponent));
+                } else {
+                    // The user's not completed the game, so show the user its outcome...
+                    await dispatch(playSetGameId(existingGame.gameId));
+                    await dispatch(playMoveNext(KubeCardsPlayState.Ended));
+                }
             } else {
+                // The existing game hasn't ended, so keep playing...
+                await dispatch(playSetGameId(existingGame.gameId));
                 await dispatch(playMoveNext(KubeCardsPlayState.Playing));
             }
         } else {
-            await dispatch(playMoveNext(KubeCardsPlayState.ChooseDeck));
+            // No existing game, so have the user start one...
+            await dispatch(playMoveNext(KubeCardsPlayState.ChooseOpponent));
         }
     };
 };

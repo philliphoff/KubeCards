@@ -91,5 +91,21 @@ namespace GameService.Controllers
 
             return operation.GameState;
         }
+
+        // POST api/games/[gameId]/complete
+        [ProducesResponseType(typeof(GameState), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("{gameId}/complete")]
+        public async Task<ActionResult<GameState>> PostCompleteGame(string gameId)
+        {
+            string userId = User.GetUserId();
+            GameOperation operation = await this.gameStateProvider.CompleteGameAsync(userId, gameId);
+            if (!operation.Succeeded)
+            {
+                return new BadRequestObjectResult(operation.ErrorMessage);
+            }
+
+            return operation.GameState;
+        }
     }
 }

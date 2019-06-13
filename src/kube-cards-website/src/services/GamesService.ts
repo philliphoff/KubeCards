@@ -3,6 +3,7 @@ import fetchService, { IFetchService } from "./FetchService";
 import environmentService from "./EnvironmentService";
 
 export interface IGamesService {
+    completeGame(gameId: string): Promise<IGameState>;
     createGame(deckId: string): Promise<IGameState>;
     getGame(gameId: string): Promise<IGameState>;
     getGames(): Promise<IGameState[]>;
@@ -13,6 +14,10 @@ class KubeCardsGamesService implements IGamesService {
     constructor(
         private readonly baseUri: string,
         private readonly fetchService: IFetchService) {
+    }
+
+    completeGame(gameId: string): Promise<IGameState> {
+        return this.post<IGameState>(`${gameId}/complete`);
     }
 
     createGame(deckId: string): Promise<IGameState> {

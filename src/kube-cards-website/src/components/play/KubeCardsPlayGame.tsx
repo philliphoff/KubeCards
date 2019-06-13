@@ -14,7 +14,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
-import { playSetCardId, playCard } from '../../actions/PlayActions';
+import { playSetCardId, playCard, playCompleteGame } from '../../actions/PlayActions';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { StyleRulesCallback } from '@material-ui/core/styles';
@@ -46,6 +46,7 @@ interface PlayerProps {
 interface KubeCardPlayGameProps {
     chosenCardId: string | undefined;
     isEnded: boolean,
+    onCompleteGame: () => void;
     onChooseCard: (cardId: string) => void;
     onPlayCard: () => void;
     player1: PlayerProps;
@@ -182,9 +183,18 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 
     private renderEnded() {
+        const { onCompleteGame } = this.props;
+
         return (
             <Container>
-                <Typography variant='h4'>This game is done!</Typography>
+                <Grid alignItems='center' container direction='column' spacing={2}>
+                    <Grid item>
+                        <Typography variant='h4'>This game is done!</Typography>
+                    </Grid>
+                    <Grid item>
+                        <Button color='primary' onClick={onCompleteGame} variant='contained'>Complete Game</Button>
+                    </Grid>
+                </Grid>
             </Container>
         );
     }
@@ -258,6 +268,9 @@ function mapDispatchToProps(dispatch: any) {
     return {
         onChooseCard: (cardId: string) => {
             dispatch(playSetCardId(cardId));
+        },
+        onCompleteGame: () => {
+            dispatch(playCompleteGame());
         },
         onPlayCard: () => {
             dispatch(playCard());

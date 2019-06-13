@@ -105,6 +105,26 @@ namespace GameService.Data
             return operation;
         }
 
+        public async Task<GameOperation> CompleteGameAsync(string userId, string gameId)
+        {
+            GameState gameState = await GetGameStateAsync(userId, gameId, sanitizeGameState: false);
+            if (gameState == null)
+            {
+                return GameOperation.Failure("No such game.");
+            }
+
+            GameOperation operation = GameHandler.CompleteGame(userId, gameState);
+            if (operation.Succeeded)
+            {
+                await PersistGameToDatabaseAsync(userId, operation.GameState);
+
+                // sanitize game state for user
+                RemovePrivateGameStateInfo(userId, operation.GameState);
+            }
+
+            return operation;
+        }
+
         private async Task PersistGameToDatabaseAsync(string userId, GameState gameState)
         {
             string gameStateJson = JsonConvert.SerializeObject(gameState);
@@ -163,6 +183,7 @@ namespace GameService.Data
                 gameState.Player2 : gameState.Player1;
 
             opponent.HandCards = null;
+            opponent.Completed = false;
         }
 
         private static string GetGameIdKey(string gameId)
