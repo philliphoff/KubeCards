@@ -67,7 +67,7 @@ class KubeCardsCard extends React.Component<CardProps> {
             <Card>
                 <CardContent>
                     <Container>
-                        <Typography color='primary' variant='h4'>{cardValue}</Typography>
+                        <Typography color={isPlayed ? 'secondary' : 'primary'} variant='h4'>{cardValue}</Typography>
                     </Container>
                 </CardContent>
                 <CardActions>
@@ -237,7 +237,25 @@ function createPlayer(player: IPlayer, nextPlayerUserId: string, chosenCardId: s
     const playedCards = (player.playedCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isChosen: card.cardId === chosenCardId, isPlayed: true }));
     const cards = unplayedCards.concat(playedCards);
     
-    cards.sort((card1, card2) => card1.cardValue - card2.cardValue);
+    cards.sort((card1, card2) => {
+        if (card1.cardValue < card2.cardValue) {
+            return -1;
+        }
+
+        if (card1.cardValue > card2.cardValue) {
+            return 1;
+        }
+
+        if (card1.cardId < card2.cardId) {
+            return -1;
+        }
+
+        if (card1.cardId > card2.cardId) {
+            return 1;
+        }
+
+        return 0;
+    });
 
     return {
         cards,
