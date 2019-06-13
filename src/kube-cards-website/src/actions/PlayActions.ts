@@ -1,5 +1,5 @@
 import { KubeCardsPlayOpponentType, KubeCardsPlayState } from "../reducers/PlayReducer";
-import { gamesAddExisting } from "./GamesActions";
+import { gamesAddExisting, gamesGet } from "./GamesActions";
 import { IKubeCardsStore } from "../KubeCardsStore";
 import gamesService from "../services/GamesService";
 
@@ -47,6 +47,24 @@ export const playCreateGame = () => {
             await dispatch(playMoveNext(KubeCardsPlayState.ConfirmPlay));
 
             throw err;
+        }
+    };
+};
+
+export const playResumeGame = () => {
+    return async (dispatch: any, getState: () => IKubeCardsStore) => {
+        await dispatch(gamesGet());
+
+        const state = getState();
+
+        const existingGameId = Object.keys(state.games.existing)[0];
+
+        if (existingGameId) {
+            await dispatch(playSetGameId(existingGameId));
+
+            await dispatch(playMoveNext(KubeCardsPlayState.Playing));
+        } else {
+            await dispatch(playMoveNext(KubeCardsPlayState.ChooseDeck));
         }
     };
 };

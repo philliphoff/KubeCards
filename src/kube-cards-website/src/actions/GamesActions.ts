@@ -18,7 +18,7 @@ export const gamesAddExisting = (existing: IGameState) => ({
 
 export const gamesGet = () => {
     return async (dispatch: any) => {
-        dispatch(gamesSetIsRefreshing(true));
+        await dispatch(gamesSetIsRefreshing(true));
         
         try {
             const existingGames = await gamesService.getGames();
@@ -31,10 +31,10 @@ export const gamesGet = () => {
                 },
                 {});
 
-            dispatch(gamesSetExisting(existingGamesMap));
+            await dispatch(gamesSetExisting(existingGamesMap));
         }
         finally {
-            dispatch(gamesSetIsRefreshing(false));
+            await dispatch(gamesSetIsRefreshing(false));
         }
     };
 }

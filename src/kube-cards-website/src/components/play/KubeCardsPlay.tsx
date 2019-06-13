@@ -5,9 +5,11 @@ import { IKubeCardsStore } from '../../KubeCardsStore';
 import KubeCardsPlayGameCreation from './KubeCardsPlayGameCreation';
 import KubeCardsPlayGame from './KubeCardsPlayGame';
 import KubeCardsPlayLoading from './KubeCardsPlayLoading';
+import { playResumeGame } from '../../actions/PlayActions';
 
 interface KubeCardsPlayProps {
-    state: KubeCardsPlayState
+    onResumeGame: () => void;
+    state: KubeCardsPlayState;
 }
 
 class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
@@ -15,10 +17,19 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
         super(props);
     }
 
+    componentDidMount() {
+        const { onResumeGame, state } = this.props;
+
+        if (state === KubeCardsPlayState.Resuming && onResumeGame) {
+            onResumeGame();
+        }
+    }
+
     render() {
         const { state } = this.props;
 
         switch (state) {
+            case KubeCardsPlayState.Resuming: return <KubeCardsPlayLoading label='Resuming the current game (if any)...' />;
             case KubeCardsPlayState.Playing: return <KubeCardsPlayGame />;
             case KubeCardsPlayState.Creating: return <KubeCardsPlayLoading label='Starting game...' />;
             default: return <KubeCardsPlayGameCreation />;
@@ -32,4 +43,12 @@ function mapStateToProps(state: IKubeCardsStore) {
     };
 }
 
-export default connect(mapStateToProps)(KubeCardsPlay);
+function mapDispatchToProps(dispatch: any) {
+    return {
+        onResumeGame: () => {
+            dispatch(playResumeGame());
+        }
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(KubeCardsPlay);

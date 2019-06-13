@@ -4,7 +4,7 @@ export enum KubeCardsPlayOpponentType {
 }
 
 export enum KubeCardsPlayState {
-    Unknown = 0,
+    Resuming,
     ChooseOpponent,
     ChooseDeck,
     ConfirmPlay,
@@ -21,7 +21,7 @@ export interface IPlayStore {
 }
 
 const defaultState: IPlayStore = {
-    state: KubeCardsPlayState.ChooseOpponent
+    state: KubeCardsPlayState.Resuming
 };
 
 const playReducer = (state: IPlayStore = defaultState, action: any) => {
