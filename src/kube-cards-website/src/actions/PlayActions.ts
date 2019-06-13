@@ -38,6 +38,16 @@ function isGameEnded(game: IGameState) {
     return isPlayerOutOfCards(game.player1) && isPlayerOutOfCards(game.player2);
 }
 
+function getMatchingPlayer(game: IGameState, userId: string): IPlayer | undefined {
+    if (game.player1.userId === userId) {
+        return game.player1;
+    } else if (game.player2.userId === userId) {
+        return game.player2;
+    } else {
+        return undefined;
+    }
+}
+
 export const playCard = () => {
     return async (dispatch: any, getState: () => IKubeCardsStore) => {
         const state = getState();
@@ -116,14 +126,26 @@ export const playResumeGame = () => {
 
         const state = getState();
 
+        const { userId } = state.userAuth;
+
+        if (!userId) {
+            throw new Error('Cannot resume a game before logging in.');
+        }
+
         const existingGameId = Object.keys(state.games.existing)[0];
         const existingGame = state.games.existing[existingGameId];
+
+        const player = getMatchingPlayer(existingGame, userId);
+
+        if (!player) {
+            throw new Error('Cannot resume a game that does not include the current user.');
+        }
 
         if (existingGame) {
             // There's an existing game; see if it's ended...
             if (isGameEnded(existingGame)) {
                 // The existing game is done; see if the user's completed it...
-                if (existingGame.player1.completed) {
+                if (player.completed) {
                     // The user's completed the game, so have the user start another one...
                     await dispatch(playMoveNext(KubeCardsPlayState.ChooseOpponent));
                 } else {

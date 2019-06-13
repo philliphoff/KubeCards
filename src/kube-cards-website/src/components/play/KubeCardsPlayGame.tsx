@@ -39,6 +39,7 @@ interface CardProps extends WithStyles<typeof styles>{
 interface PlayerProps {
     cards: Omit<CardProps, 'classes' | 'onChooseCard'>[];
     isNext: boolean;
+    isUser: boolean;
     label: string;
     score: number;
 }
@@ -200,8 +201,8 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 
     private renderHand() {
-        const { chosenCardId, onChooseCard, onPlayCard, player1 } = this.props;
-        const { cards } = player1;
+        const { chosenCardId, onChooseCard, onPlayCard, player1, player2 } = this.props;
+        const { cards } = player1.isUser ? player1 : player2;
 
         return (
             <Grid alignItems='center' container direction='column' spacing={2}>
@@ -232,7 +233,7 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
     }
 };
 
-function createPlayer(player: IPlayer, nextPlayerUserId: string, chosenCardId: string | undefined): PlayerProps {
+function createPlayer(player: IPlayer, nextPlayerUserId: string, userId: string, chosenCardId: string | undefined): PlayerProps {
     const unplayedCards = (player.handCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isChosen: card.cardId === chosenCardId, isPlayed: false }));
     const playedCards = (player.playedCards || []).map(card => ({ cardId: card.cardId, cardValue: card.cardValue, isChosen: card.cardId === chosenCardId, isPlayed: true }));
     const cards = unplayedCards.concat(playedCards);
@@ -260,6 +261,7 @@ function createPlayer(player: IPlayer, nextPlayerUserId: string, chosenCardId: s
     return {
         cards,
         isNext: player.userId === nextPlayerUserId,
+        isUser: player.userId === userId,
         label: player.displayName,
         score: (player.playedCards || []).reduce((total, card) => total + card.cardValue, 0)
     };
@@ -267,6 +269,11 @@ function createPlayer(player: IPlayer, nextPlayerUserId: string, chosenCardId: s
 
 function mapStateToProps(state: IKubeCardsStore) {
     const { cardId, gameId } = state.play;
+    const { userId } = state.userAuth;
+
+    if (!userId) {
+        throw new Error('Cannot play a game without first logging in.');
+    }
 
     if (!gameId) {
         throw new Error('Cannot play a game without a valid game ID.');
@@ -277,8 +284,8 @@ function mapStateToProps(state: IKubeCardsStore) {
     return {
         chosenCardId: state.play.cardId,
         isEnded: state.play.state === KubeCardsPlayState.Ended,
-        player1: createPlayer(game.player1, game.nextPlayerUserId, cardId),
-        player2: createPlayer(game.player2, game.nextPlayerUserId, cardId)
+        player1: createPlayer(game.player1, game.nextPlayerUserId, userId, cardId),
+        player2: createPlayer(game.player2, game.nextPlayerUserId, userId, cardId)
     };
 }
 

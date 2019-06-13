@@ -50,9 +50,9 @@ class KubeCardsPlay extends React.Component<KubeCardsPlayProps> {
     }
 
     private resumeIfNecessary() {
-        const { onResumeGame, state } = this.props;
+        const { isLoggedIn, onResumeGame, state } = this.props;
 
-        if (state === KubeCardsPlayState.Resuming && onResumeGame) {
+        if (isLoggedIn && state === KubeCardsPlayState.Resuming && onResumeGame) {
             onResumeGame();
         }
     }
