@@ -30,8 +30,14 @@ function getLabelForOpponent(opponentType: KubeCardsPlayOpponentType | undefined
 }
 
 function mapStateToProps(state: IKubeCardsStore) {
+    const deck = state.decks.decks.find(deck => deck.id === state.play.deckId);
+
+    if (!deck) {
+        throw new Error('Cannot confirm a game without a selected deck.');
+    }
+
     return {
-        deckLabel: state.play.deckId || 'Unknown',
+        deckLabel: deck.displayName || '<Unnamed Deck>',
         opponentLabel: getLabelForOpponent(state.play.opponentType, state.play.opponentId)
     };
 }

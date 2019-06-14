@@ -5,6 +5,7 @@ export interface ICardStore {
 
 export interface IDeckStore {
     cards: ICardStore[];
+    displayName: string | undefined,
     id: string;
 }
 

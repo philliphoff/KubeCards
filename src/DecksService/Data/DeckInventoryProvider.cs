@@ -38,7 +38,8 @@ namespace DecksService.Data
 
             var deck = new Deck
             {
-                Cards = starterCards.Cards
+                Cards = starterCards.Cards,
+                DisplayName = "Starter Deck"
             };
 
             var result = await this.UpsertDeckAsync(userId, deckId, deck, authToken);
@@ -158,6 +159,8 @@ namespace DecksService.Data
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+
                 throw;
             }
         }

@@ -5,11 +5,13 @@ export interface ICard {
 
 export interface IDeck {    
     cards: ICard[];
+    displayName?: string;
     id?: string;
 }
 
 export interface IPlayer {
     completed: boolean;
+    deckDisplayName?: string;
     displayName: string;
     userId: string;
     handCards: ICard[] | null;

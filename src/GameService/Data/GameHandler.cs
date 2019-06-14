@@ -23,6 +23,7 @@ namespace GameService.Data
             gameState.NextPlayerUserId = userId;
             gameState.Player1 = new Player
             {
+                DeckDisplayName = deck.DisplayName,
                 DisplayName = "Player1",
                 HandCards = GetRandomHandFromDeck(deck),
                 UserId = userId
