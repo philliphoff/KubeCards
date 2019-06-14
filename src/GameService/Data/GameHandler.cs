@@ -10,7 +10,7 @@ namespace GameService.Data
     {
         private const int HandSize = 5;
 
-        public static GameOperation StartGame(string userId, Deck deck)
+        public static GameOperation StartGame(string userId, string userName, Deck deck)
         {
             if (!IsPlayableDeck(deck))
             {
@@ -23,8 +23,8 @@ namespace GameService.Data
             gameState.NextPlayerUserId = userId;
             gameState.Player1 = new Player
             {
+                DisplayName = userName,
                 DeckDisplayName = deck.DisplayName,
-                DisplayName = "Player1",
                 HandCards = GetRandomHandFromDeck(deck),
                 UserId = userId
             };

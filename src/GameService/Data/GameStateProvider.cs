@@ -83,7 +83,7 @@ namespace GameService.Data
             return operation;
         }
 
-        public async Task<GameOperation> StartGameAsync(string userId, string deckId, string authToken)
+        public async Task<GameOperation> StartGameAsync(string userId, string userName, string deckId, string authToken)
         {
             var redisDb = this.redis.GetDatabase();
 
@@ -93,7 +93,7 @@ namespace GameService.Data
                 return GameOperation.Failure("No such deck");
             }
 
-            GameOperation operation = GameHandler.StartGame(userId, deck);
+            GameOperation operation = GameHandler.StartGame(userId, userName, deck);
             if (operation.Succeeded)
             {
                 await PersistGameToDatabaseAsync(userId, operation.GameState);

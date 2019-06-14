@@ -66,8 +66,9 @@ namespace GameService.Controllers
         public async Task<ActionResult<GameState>> Post([FromBody] string deckId)
         {
             string userId = User.GetUserId();
+            string userName = User.GetUserName();
             string authToken = this.Request.GetBearerAuthToken();
-            GameOperation operation = await this.gameStateProvider.StartGameAsync(userId, deckId, authToken);
+            GameOperation operation = await this.gameStateProvider.StartGameAsync(userId, userName, deckId, authToken);
             if (!operation.Succeeded)
             {
                 return new BadRequestObjectResult(operation.ErrorMessage);
