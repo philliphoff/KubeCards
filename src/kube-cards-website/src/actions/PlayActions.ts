@@ -135,13 +135,13 @@ export const playResumeGame = () => {
         const existingGameId = Object.keys(state.games.existing)[0];
         const existingGame = state.games.existing[existingGameId];
 
-        const player = getMatchingPlayer(existingGame, userId);
-
-        if (!player) {
-            throw new Error('Cannot resume a game that does not include the current user.');
-        }
-
         if (existingGame) {
+            const player = getMatchingPlayer(existingGame, userId);
+
+            if (!player) {
+                throw new Error('Cannot resume a game that does not include the current user.');
+            }
+
             // There's an existing game; see if it's ended...
             if (isGameEnded(existingGame)) {
                 // The existing game is done; see if the user's completed it...
