@@ -21,6 +21,8 @@ import { StyleRulesCallback } from '@material-ui/core/styles';
 import { WithStyles, withStyles } from '@material-ui/styles';
 import { KubeCardsPlayState } from '../../reducers/PlayReducer';
 import DoneIcon from '@material-ui/icons/Done';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 const styles: StyleRulesCallback = (theme: any) => ({
     button: {
@@ -45,8 +47,14 @@ interface PlayerProps {
     score: number;
 }
 
+interface HistoryItemProps {
+    description: string;
+    timestamp: Date
+}
+
 interface KubeCardPlayGameProps {
     chosenCardId: string | undefined;
+    history: HistoryItemProps[];
     isEnded: boolean,
     onCompleteGame: () => void;
     onChooseCard: (cardId: string) => void;
@@ -121,6 +129,9 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
                 </Grid>
                 <Grid item>
                     { isEnded ? this.renderEnded() : this.renderHand() }
+                </Grid>
+                <Grid item>
+                    { this.renderHistory() }
                 </Grid>
             </Grid>
         );
@@ -228,6 +239,33 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
         );
     }
 
+    private renderHistory() {
+        const { history } = this.props;
+
+        const reverseHistory = [...history];
+
+        reverseHistory.reverse();
+
+        return (
+            <List>
+                {
+                    reverseHistory.map(item => (
+                        <ListItem key={item.timestamp.getTime().toString() + ':' + item.description}>
+                            <Grid container spacing={2}>
+                                <Grid item>
+                                    <Typography>{item.timestamp.toLocaleTimeString()}</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <Typography>{item.description}</Typography>
+                                </Grid>
+                            </Grid>
+                        </ListItem>
+                    ))
+                }
+            </List>
+        );
+    }
+
     private onCardClick(event: React.MouseEvent) {
         const { onChooseCard } = this.props;
 
@@ -288,6 +326,7 @@ function mapStateToProps(state: IKubeCardsStore) {
 
     return {
         chosenCardId: state.play.cardId,
+        history: game.history.map(item => ({ description: item.description, timestamp: new Date(item.actionDateTimeUtc)})),
         isEnded: state.play.state === KubeCardsPlayState.Ended,
         player1: createPlayer(game.player1, game.nextPlayerUserId, userId, cardId),
         player2: createPlayer(game.player2, game.nextPlayerUserId, userId, cardId)
