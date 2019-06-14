@@ -24,6 +24,7 @@ namespace GameService.Data
             gameState.Player1 = new Player
             {
                 DisplayName = userName,
+                DeckDisplayName = deck.DisplayName,
                 HandCards = GetRandomHandFromDeck(deck),
                 UserId = userId
             };
