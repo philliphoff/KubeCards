@@ -38,6 +38,7 @@ interface CardProps extends WithStyles<typeof styles>{
 
 interface PlayerProps {
     cards: Omit<CardProps, 'classes' | 'onChooseCard'>[];
+    deckDisplayName: string | undefined;
     isNext: boolean;
     isUser: boolean;
     label: string;
@@ -202,10 +203,13 @@ class KubeCardsPlayGame extends React.Component<KubeCardPlayGameProps> {
 
     private renderHand() {
         const { chosenCardId, onChooseCard, onPlayCard, player1, player2 } = this.props;
-        const { cards } = player1.isUser ? player1 : player2;
+        const { cards, deckDisplayName } = player1.isUser ? player1 : player2;
 
         return (
             <Grid alignItems='center' container direction='column' spacing={2}>
+                <Grid item>
+                    <Typography>{deckDisplayName || '<Unnamed Deck>'}</Typography>
+                </Grid>
                 <Grid item>
                     <Grid container spacing={2}>
                         {
@@ -260,6 +264,7 @@ function createPlayer(player: IPlayer, nextPlayerUserId: string, userId: string,
 
     return {
         cards,
+        deckDisplayName: player.deckDisplayName,
         isNext: player.userId === nextPlayerUserId,
         isUser: player.userId === userId,
         label: player.displayName,

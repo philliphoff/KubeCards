@@ -103,7 +103,7 @@ class KubeCardsPlayDeckChoice extends React.Component<KubeCardsPlayDeckChoicePro
                         <Grid item key={deck.id}>
                             <Card className={deck.id === chosenDeckId ? classes.chosenCard : classes.card}>
                                 <CardContent>
-                                    <Typography>{deck.id}</Typography>
+                                    <Typography>{deck.displayName || '<Unnamed Deck>'}</Typography>
                                 </CardContent>
                                 <CardActions>
                                     <IconButton id={deck.id} onClick={this.onClick}>
