@@ -184,6 +184,7 @@ namespace GameService.Data
 
             opponent.HandCards = null;
             opponent.Completed = false;
+            opponent.DeckDisplayName = null;
         }
 
         private static string GetGameIdKey(string gameId)
